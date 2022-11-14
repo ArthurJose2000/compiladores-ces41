@@ -55,7 +55,7 @@ typedef enum
     /* book-keeping tokens */
    {ENDFILE,ERROR,
     /* reserved words */
-    IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,INT,RETURN,VOID,WHILE,
+    IF,ELSE,INT,RETURN,VOID,WHILE,
     /* multicharacter tokens */
     ID,NUM,
     /* special symbols */
@@ -72,12 +72,13 @@ extern int lineno; /* source line number for listing */
 /***********   Syntax tree for parsing ************/
 /**************************************************/
 
-typedef enum {StmtK,ExpK} NodeKind;
-typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
+typedef enum {StmtK,ExpK,DeclK,TypeK} NodeKind;
+typedef enum {VarK,FunK} DeclKind;
+typedef enum {IfK,RepeatK,AssignK} StmtKind;
 typedef enum {OpK,ConstK,IdK} ExpKind;
 
 /* ExpType is used for type checking */
-typedef enum {Void,Integer,Boolean} ExpType;
+typedef enum {Void,Integer} ExpType;
 
 #define MAXCHILDREN 3
 
@@ -86,7 +87,7 @@ typedef struct treeNode
      struct treeNode * sibling;
      int lineno;
      NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp;} kind;
+     union { StmtKind stmt; ExpKind exp; DeclKind decl;} kind;
      union { TokenType op;
              int val;
              char * name; } attr;

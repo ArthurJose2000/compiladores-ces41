@@ -66,6 +66,45 @@ void printToken( TokenType token, const char* tokenString )
   }
 }
 
+
+/* Function newTypeNode creates a new Type
+ * node for syntax tree construction
+ */
+TreeNode * newTypeNode()
+{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+  int i;
+  if (t==NULL)
+    fprintf(listing,"Out of memory error at line %d\n",lineno);
+  else {
+    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->sibling = NULL;
+    t->nodekind = TypeK;
+    t->lineno = lineno;
+    t->type = Void;
+  }
+  return t;
+}
+
+/* Function newDeclNode creates a new Declaracao
+ * node for syntax tree construction
+ */
+TreeNode * newDeclNode(DeclKind kind)
+{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+  int i;
+  if (t==NULL)
+    fprintf(listing,"Out of memory error at line %d\n",lineno);
+  else {
+    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->sibling = NULL;
+    t->nodekind = DeclK;
+    t->kind.decl = kind;
+    t->lineno = lineno;
+    t->type = Void;
+  }
+  return t;
+}
+
+
 /* Function newStmtNode creates a new statement
  * node for syntax tree construction
  */
