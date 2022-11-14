@@ -104,7 +104,7 @@ var_decl    : INT ID { savedName = copyString(tokenString);
             ;
 fun_decl    : INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
-              LPAREN params RPAREN RPAREN
+              LPAREN params RPAREN comp_decl
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
