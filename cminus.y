@@ -104,7 +104,7 @@ var_decl    : INT ID { savedName = copyString(tokenString);
             ;
 fun_decl    : INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
-              LPAREN params RPAREN comp_decl
+              LPAREN params RPAREN RPAREN
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
@@ -271,11 +271,11 @@ ret_decl    : RETURN SEMI
             | RETURN exp SEMI
               { $$ = $2; }
             ;
-exp         : var EQ exp 
+exp         : var ASSIGN exp 
               { $$ = newExpNode(OpK);
                 $$->child[0] = $1;
                 $$->child[1] = $3;
-                $$->attr.op = EQ;
+                $$->attr.op = ASSIGN;
               }
             | simp_exp
               { $$ = $1; }
