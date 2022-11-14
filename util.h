@@ -23,6 +23,16 @@ TreeNode * newStmtNode(StmtKind);
  */
 TreeNode * newExpNode(ExpKind);
 
+/* Function newDeclNode creates a new declatation 
+ * node for syntax tree construction
+ */
+TreeNode * newDeclNode(DeclKind);
+
+/* Function newTypeNode creates a new type 
+ * node for syntax tree construction
+ */
+TreeNode * newTypeNode();
+
 /* Function copyString allocates and makes a new
  * copy of an existing string
  */

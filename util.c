@@ -15,13 +15,7 @@
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
   { case IF:
-    case THEN:
     case ELSE:
-    case END:
-    case REPEAT:
-    case UNTIL:
-    case READ:
-    case WRITE:
     case INT:
     case RETURN:
     case VOID:
@@ -192,12 +186,6 @@ void printTree( TreeNode * tree )
         case AssignK:
           fprintf(listing,"Assign to: %s\n",tree->attr.name);
           break;
-        case ReadK:
-          fprintf(listing,"Read: %s\n",tree->attr.name);
-          break;
-        case WriteK:
-          fprintf(listing,"Write\n");
-          break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
@@ -217,6 +205,17 @@ void printTree( TreeNode * tree )
           break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
+          break;
+      }
+    }
+    else if (tree->nodekind==DeclK)
+    {
+      switch (tree->kind.decl){
+        case VarK:
+          fprintf(listing,"Var: %s\n", tree->attr.name);
+          break;
+        case FunK:
+          fprintf(listing,"Fun: %s\n", tree->attr.name);
           break;
       }
     }

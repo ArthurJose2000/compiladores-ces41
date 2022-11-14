@@ -26,13 +26,13 @@
 #ifndef YYPARSER
 
 /* the name of the following file may change */
+
 #include "cminus.tab.h"
 
 /* ENDFILE is implicitly defined by Yacc/Bison,
  * and not included in the tab.h file
  */
 #define ENDFILE 0
-
 #endif
 
 #ifndef FALSE
@@ -51,16 +51,14 @@
  */
 typedef int TokenType; 
 
+/*
 typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE,ERROR,
-    /* reserved words */
-    IF,ELSE,INT,RETURN,VOID,WHILE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    ASSIGN,LT,LEQT,GT,GEQT,EQ,NEQ,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,LBRACK,RBRACK,LBRACE,RBRACE,SEMI,COMA
-   } TokenType;
+{ENDFILE,ERROR,
+IF,ELSE,INT,RETURN,VOID,WHILE,
+ID,NUM,
+ASSIGN,LT,LEQT,GT,GEQT,EQ,NEQ,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,LBRACK,RBRACK,LBRACE,RBRACE,SEMI,COMA
+} TokenType;*/
+
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */

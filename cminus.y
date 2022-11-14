@@ -22,9 +22,9 @@ int yyerror(char *s);
 
 %}
 
-%token IF THEN ELSE INT VOID WHILE 
+%token IF ELSE INT VOID WHILE 
 %token ID NUM 
-%token ASSIGN LT LEQT GT GEGT EQ NEQ PLUS MINUS TIMES OVER 
+%token ASSIGN RETURN LT LEQT GT GEQT EQ NEQ PLUS MINUS TIMES OVER 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI COMA
 %token ERROR 
 
@@ -46,13 +46,11 @@ decl_lista    : decl_lista decl
             ;
 decl        : var_decl { $$ = $1; }
             | fun_decl { $$ = $1; }
-            | error { $$ = NULL; }
             ;
 var_decl    : tipo_espec ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; } 
               SEMI
                 { $$ = newTypeNode();
-                  $$->type = $1;
                   $$->lineno = savedLineNo;
                   $$ = $$->child[0];
                   
@@ -62,10 +60,9 @@ var_decl    : tipo_espec ID { savedName = copyString(tokenString);
                 }
             | tipo_espec ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
-              LBRACK NUM { savedValue = atoi(tokenstring) } RBRACK SEMI
+              LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
                 {
                   $$ = newTypeNode();
-                  $$->type = $1;
                   $$ = $$->child[0];
 
                   $$ = newDeclNode(VarK);
@@ -77,10 +74,9 @@ var_decl    : tipo_espec ID { savedName = copyString(tokenString);
                 }
             ;
 tipo_espec  : INT 
-              {$$ = Integer;}
+              {$$ = NULL;}
             | VOID
-              {$$ = Void;}
-            | error { $$ = NULL; }
+              {$$ = NULL;}
             ;
 fun_decl    : tipo_espec ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
@@ -164,7 +160,6 @@ loc_decls   : loc_decls var_decl
                   $$ = $1; }
                   else $$ = $2;
               }
-            | error { $$ = NULL; }
             ;
 stmt_list   : stmt_list stmt
               { YYSTYPE t = $1;
@@ -175,7 +170,6 @@ stmt_list   : stmt_list stmt
                   $$ = $1; }
                   else $$ = $2;
               }
-            | error { $$ = NULL; }
             ; 
 stmt        : exp_decl { $$ = $1; }
             | comp_decl { $$ = $1; }
@@ -305,7 +299,6 @@ ativ        : ID { savedName = copyString(tokenString);
             ;
 args        : arg_list
               { $$ = $1; }
-            | error { $$ = NULL; }
             ;
 arg_list    : arg_list COMA exp
               { YYSTYPE t = $1;
