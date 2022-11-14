@@ -51,14 +51,6 @@
  */
 typedef int TokenType; 
 
-/*
-typedef enum 
-{ENDFILE,ERROR,
-IF,ELSE,INT,RETURN,VOID,WHILE,
-ID,NUM,
-ASSIGN,LT,LEQT,GT,GEQT,EQ,NEQ,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,LBRACK,RBRACK,LBRACE,RBRACE,SEMI,COMA
-} TokenType;*/
-
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */

@@ -47,10 +47,11 @@ decl_lista    : decl_lista decl
 decl        : var_decl { $$ = $1; }
             | fun_decl { $$ = $1; }
             ;
-var_decl    : tipo_espec ID { savedName = copyString(tokenString);
+var_decl    : INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; } 
               SEMI
                 { $$ = newTypeNode();
+                  $$->type = Integer;
                   $$->lineno = savedLineNo;
                   $$ = $$->child[0];
                   
@@ -58,11 +59,39 @@ var_decl    : tipo_espec ID { savedName = copyString(tokenString);
                   $$->attr.name = savedName;
                   $$->lineno = savedLineNo;
                 }
-            | tipo_espec ID { savedName = copyString(tokenString);
+            | VOID ID { savedName = copyString(tokenString);
+                              savedLineNo = lineno; } 
+              SEMI
+                { $$ = newTypeNode();
+                  $$->type = Void;
+                  $$->lineno = savedLineNo;
+                  $$ = $$->child[0];
+                  
+                  $$ = newDeclNode(VarK);
+                  $$->attr.name = savedName;
+                  $$->lineno = savedLineNo;
+                }
+            | INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
               LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
                 {
                   $$ = newTypeNode();
+                  $$->type = Integer;
+                  $$ = $$->child[0];
+
+                  $$ = newDeclNode(VarK);
+                  $$->attr.name = savedName;
+                  $$->lineno = savedLineNo;
+
+                  $$->child[0] = newExpNode(ConstK);
+                  $$->child[0]->attr.val = savedValue;
+                }
+            | VOID ID { savedName = copyString(tokenString);
+                              savedLineNo = lineno; }
+              LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
+                {
+                  $$ = newTypeNode();
+                  $$->type = Void;
                   $$ = $$->child[0];
 
                   $$ = newDeclNode(VarK);
@@ -73,17 +102,28 @@ var_decl    : tipo_espec ID { savedName = copyString(tokenString);
                   $$->child[0]->attr.val = savedValue;
                 }
             ;
-tipo_espec  : INT 
-              {$$ = NULL;}
-            | VOID
-              {$$ = NULL;}
-            ;
-fun_decl    : tipo_espec ID { savedName = copyString(tokenString);
+fun_decl    : INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
               LPAREN params RPAREN comp_decl
                 {
                   $$ = newTypeNode();
-                  $$->type = $1;
+                  $$->type = Integer;
+                  $$ = $$->child[0];
+
+
+                  $$ = newDeclNode(FunK); 
+                  $$->attr.name = savedName;
+                  $$->lineno = savedLineNo;
+
+                  $$->child[0] = $5;
+                  $$->child[1] = $7;
+                }
+            | VOID ID { savedName = copyString(tokenString);
+                              savedLineNo = lineno; }
+              LPAREN params RPAREN comp_decl
+                {
+                  $$ = newTypeNode();
+                  $$->type = Void;
                   $$ = $$->child[0];
 
 
@@ -114,10 +154,10 @@ param_list  : param_list COMA param
                  }
             | param { $$ = $1; }
             ;
-param       : tipo_espec ID { savedName = copyString(tokenString);
+param       : INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; } 
                 { $$ = newTypeNode();
-                  $$->type = $1;
+                  $$->type = Integer;
                   $$->lineno = savedLineNo;
                   $$ = $$->child[0];
                   
@@ -125,12 +165,38 @@ param       : tipo_espec ID { savedName = copyString(tokenString);
                   $$->attr.name = savedName;
                   $$->lineno = savedLineNo;
                 }
-            | tipo_espec ID { savedName = copyString(tokenString);
+            | VOID ID { savedName = copyString(tokenString);
+                              savedLineNo = lineno; } 
+                { $$ = newTypeNode();
+                  $$->type = Void;
+                  $$->lineno = savedLineNo;
+                  $$ = $$->child[0];
+                  
+                  $$ = newDeclNode(VarK);
+                  $$->attr.name = savedName;
+                  $$->lineno = savedLineNo;
+                }
+            | INT ID { savedName = copyString(tokenString);
                               savedLineNo = lineno; }
               LBRACK RBRACK
                 {
                   $$ = newTypeNode();
-                  $$->type = $1;
+                  $$->type = Integer;
+                  $$ = $$->child[0];
+
+                  $$ = newDeclNode(VarK);
+                  $$->attr.name = savedName;
+                  $$->lineno = savedLineNo;
+
+                  $$->child[0] = newExpNode(ConstK);
+                  $$->child[0]->type = Void;
+                }
+            | VOID ID { savedName = copyString(tokenString);
+                              savedLineNo = lineno; }
+              LBRACK RBRACK
+                {
+                  $$ = newTypeNode();
+                  $$->type = Void;
                   $$ = $$->child[0];
 
                   $$ = newDeclNode(VarK);

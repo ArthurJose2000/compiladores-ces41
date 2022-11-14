@@ -15,7 +15,7 @@
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -39,7 +39,7 @@ FILE * code;
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
 int TraceScan = TRUE;
-int TraceParse = FALSE;
+int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 
@@ -66,7 +66,6 @@ int main( int argc, char * argv[] )
 #if NO_PARSE
   while (getToken()!=ENDFILE);
 #else
-  //printf("oi");
   syntaxTree = parse();
   if (TraceParse) {
     fprintf(listing,"\nSyntax tree:\n");
