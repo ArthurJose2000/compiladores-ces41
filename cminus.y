@@ -53,11 +53,10 @@ var_decl    : INT ID { savedName = copyString(tokenString);
                 { $$ = newTypeNode();
                   $$->type = Integer;
                   $$->lineno = savedLineNo;
-                  $$ = $$->child[0];
                   
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
                 }
             | VOID ID { savedName = copyString(tokenString);
                           savedLineNo = lineno; } 
@@ -65,11 +64,10 @@ var_decl    : INT ID { savedName = copyString(tokenString);
                 { $$ = newTypeNode();
                   $$->type = Void;
                   $$->lineno = savedLineNo;
-                  $$ = $$->child[0];
                   
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
                 }
             | INT ID { savedName = copyString(tokenString);
                         savedLineNo = lineno; }
@@ -77,14 +75,13 @@ var_decl    : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
-                  $$ = $$->child[0];
 
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$->child[0] = newExpNode(ConstK);
-                  $$->child[0]->attr.val = savedValue;
+                  $$->child[0]->child[0] = newExpNode(ConstK);
+                  $$->child[0]->child[0]->attr.val = savedValue;
                 }
             | VOID ID { savedName = copyString(tokenString);
                           savedLineNo = lineno; }
@@ -92,14 +89,13 @@ var_decl    : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
-                  $$ = $$->child[0];
 
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$->child[0] = newExpNode(ConstK);
-                  $$->child[0]->attr.val = savedValue;
+                  $$->child[0]->child[0] = newExpNode(ConstK);
+                  $$->child[0]->child[0]->attr.val = savedValue;
                 }
             ;
 fun_decl    : INT ID { savedName = copyString(tokenString);
@@ -109,15 +105,13 @@ fun_decl    : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
-                  $$ = $$->child[0];
 
+                  $$->child[0] = newDeclNode(FunK); 
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$ = newDeclNode(FunK); 
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
-
-                  $$->child[0] = $5;
-                  $$->child[1] = $7;
+                  $$->child[0]->child[0] = $5;
+                  $$->child[0]->child[1] = $7;
                 }
             | VOID ID { savedName = copyString(tokenString);
                           savedLineNo = lineno; }
@@ -125,15 +119,13 @@ fun_decl    : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
-                  $$ = $$->child[0];
 
+                  $$->child[0] = newDeclNode(FunK); 
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$ = newDeclNode(FunK); 
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
-
-                  $$->child[0] = $5;
-                  $$->child[1] = $7;
+                  $$->child[0]->child[0] = $5;
+                  $$->child[0]->child[1] = $7;
                 }
             ;
 params      : param_list 
@@ -141,6 +133,7 @@ params      : param_list
             | VOID
               { 
                 $$ = newDeclNode(VarK);
+                $$->attr.name = "void";
                 $$->type = Void;
               }
             ;
@@ -160,22 +153,20 @@ param       : INT ID { savedName = copyString(tokenString);
                 { $$ = newTypeNode();
                   $$->type = Integer;
                   $$->lineno = savedLineNo;
-                  $$ = $$->child[0];
                   
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
                 }
             | VOID ID { savedName = copyString(tokenString);
                           savedLineNo = lineno; } 
                 { $$ = newTypeNode();
                   $$->type = Void;
                   $$->lineno = savedLineNo;
-                  $$ = $$->child[0];
                   
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
                 }
             | INT ID { savedName = copyString(tokenString);
                         savedLineNo = lineno; }
@@ -183,14 +174,13 @@ param       : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
-                  $$ = $$->child[0];
 
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$->child[0] = newExpNode(ConstK);
-                  $$->child[0]->type = Void;
+                  $$->child[0]->child[0] = newExpNode(ConstK);
+                  $$->child[0]->child[0]->type = Void;
                 }
             | VOID ID { savedName = copyString(tokenString);
                           savedLineNo = lineno; }
@@ -198,14 +188,13 @@ param       : INT ID { savedName = copyString(tokenString);
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
-                  $$ = $$->child[0];
 
-                  $$ = newDeclNode(VarK);
-                  $$->attr.name = savedName;
-                  $$->lineno = savedLineNo;
+                  $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->attr.name = savedName;
+                  $$->child[0]->lineno = savedLineNo;
 
-                  $$->child[0] = newExpNode(ConstK);
-                  $$->child[0]->type = Void;
+                  $$->child[0]->child[0] = newExpNode(ConstK);
+                  $$->child[0]->child[0]->type = Void;
                 }
             ;
 comp_decl   : LBRACE loc_decls stmt_list RBRACE
@@ -271,8 +260,11 @@ itera_decl  : WHILE LPAREN exp RPAREN stmt
                 $$->child[1] = $5;
               }
             ;
-ret_decl    : RETURN SEMI { $$ = NULL; }
-            | RETURN exp SEMI { $$ = $2; }
+ret_decl    : RETURN SEMI { $$ = newStmtNode(ReturnK); }
+            | RETURN exp SEMI 
+                { $$ = newStmtNode(ReturnK);
+                  $$->child[0] = $2; 
+                }
             ;
 exp         : var ASSIGN exp 
               { $$ = newExpNode(OpK);
