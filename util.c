@@ -212,10 +212,10 @@ void printTree( TreeNode * tree )
     {
       switch (tree->kind.decl){
         case VarK:
-          fprintf(listing,"Var: %s\n", tree->attr.name);
+          fprintf(listing,"Decl_Var: %s\n", tree->attr.name);
           break;
         case FunK:
-          fprintf(listing,"Fun: %s\n", tree->attr.name);
+          fprintf(listing,"Decl_Fun: %s\n", tree->attr.name);
           break;
       }
     }
