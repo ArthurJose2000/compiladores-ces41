@@ -33,6 +33,11 @@ TreeNode * newDeclNode(DeclKind);
  */
 TreeNode * newTypeNode();
 
+/* Function newAtvNode creates a new Ativation
+ * node for syntax tree construction
+ */
+TreeNode * newAtvNode();
+
 /* Function copyString allocates and makes a new
  * copy of an existing string
  */

@@ -123,6 +123,26 @@ TreeNode *newTypeNode()
   return t;
 }
 
+/* Function newAtvNode creates a new Ativation
+ * node for syntax tree construction
+ */
+TreeNode *newAtvNode()
+{
+  TreeNode *t = (TreeNode *)malloc(sizeof(TreeNode));
+  int i;
+  if (t == NULL)
+    fprintf(listing, "Out of memory error at line %d\n", lineno);
+  else
+  {
+    for (i = 0; i < MAXCHILDREN; i++)
+      t->child[i] = NULL;
+    t->sibling = NULL;
+    t->nodekind = AtvK;
+    t->lineno = lineno;
+  }
+  return t;
+}
+
 /* Function newDeclNode creates a new Declaracao
  * node for syntax tree construction
  */
@@ -296,6 +316,10 @@ void printTree(TreeNode *tree)
         fprintf(listing, "void \n");
         break;
       }
+    }
+    else if (tree->nodekind == AtvK)
+    {
+      fprintf(listing, "Atv_Fun: %s\n", tree->attr.name);
     }
     else
       fprintf(listing, "Unknown node kind\n");

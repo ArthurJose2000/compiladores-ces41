@@ -47,85 +47,76 @@ decl_lista    : decl_lista decl
 decl        : fun_decl { $$ = $1; }
             | var_decl { $$ = $1; }
             ;
-var_decl    : INT ID { savedName = copyString(tokenString);
-                        savedLineNo = lineno; } 
-              SEMI
+id          : ID {$$ = newExpNode(IdK);
+                  $$->attr.name = copyString(ID_name);
+                  $$->lineno = lineno;}
+            ;
+var_decl    : INT id SEMI
                 { $$ = newTypeNode();
                   $$->type = Integer;
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
                 }
-            | VOID ID { savedName = copyString(tokenString);
-                          savedLineNo = lineno; } 
-              SEMI
+            | VOID id SEMI
                 { $$ = newTypeNode();
                   $$->type = Void;
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
                 }
-            | INT ID { savedName = copyString(tokenString);
-                        savedLineNo = lineno; }
-              LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
+            | INT id LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
 
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
                   $$->child[0]->child[0] = newExpNode(ConstK);
                   $$->child[0]->child[0]->attr.val = savedValue;
                 }
-            | VOID ID { savedName = copyString(tokenString);
-                          savedLineNo = lineno; }
-              LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
+            | VOID id LBRACK NUM { savedValue = atoi(tokenString); } RBRACK SEMI
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
                   $$->child[0]->child[0] = newExpNode(ConstK);
                   $$->child[0]->child[0]->attr.val = savedValue;
                 }
             ;
-fun_decl    : INT ID { savedName = copyString(tokenString);
-                        printf("print %s", tokenString);
-                        savedLineNo = lineno; } 
-              LPAREN params RPAREN comp_decl
+fun_decl    : INT id LPAREN params RPAREN comp_decl
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
 
                   $$->child[0] = newDeclNode(FunK); 
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
-                  $$->child[0]->child[0] = $5;
-                  $$->child[0]->child[1] = $7;
+                  $$->child[0]->child[0] = $4;
+                  $$->child[0]->child[1] = $6;
                 }
-            | VOID ID { savedName = copyString(tokenString);
-                          savedLineNo = lineno; }
-              LPAREN params RPAREN comp_decl
+            | VOID id LPAREN params RPAREN comp_decl
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(FunK); 
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
-                  $$->child[0]->child[0] = $5;
-                  $$->child[0]->child[1] = $7;
+                  $$->child[0]->child[0] = $4;
+                  $$->child[0]->child[1] = $6;
                 }
             ;
 params      : param_list 
@@ -148,50 +139,44 @@ param_list  : param_list COMA param
                  }
             | param { $$ = $1; }
             ;
-param       : INT ID { savedName = copyString(tokenString);
-                        savedLineNo = lineno; } 
+param       : INT id
                 { $$ = newTypeNode();
                   $$->type = Integer;
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
                 }
-            | VOID ID { savedName = copyString(tokenString);
-                          savedLineNo = lineno; } 
+            | VOID id
                 { $$ = newTypeNode();
                   $$->type = Void;
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
                 }
-            | INT ID { savedName = copyString(tokenString);
-                        savedLineNo = lineno; }
-              LBRACK RBRACK
+            | INT id LBRACK RBRACK
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
 
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
                   $$->child[0]->child[0] = newExpNode(ConstK);
                   $$->child[0]->child[0]->type = Void;
                 }
-            | VOID ID { savedName = copyString(tokenString);
-                          savedLineNo = lineno; }
-              LBRACK RBRACK
+            | VOID id LBRACK RBRACK
                 {
                   $$ = newTypeNode();
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(VarK);
-                  $$->child[0]->attr.name = savedName;
-                  $$->child[0]->lineno = savedLineNo;
+                  $$->child[0]->attr.name = $2->attr.name;
+                  $$->child[0]->lineno = $2->lineno;
 
                   $$->child[0]->child[0] = newExpNode(ConstK);
                   $$->child[0]->child[0]->type = Void;
@@ -274,16 +259,12 @@ exp         : var ASSIGN exp
               }
             | simp_exp { $$ = $1; }
             ;
-var         : ID  { $$ = newExpNode(IdK);
-                    $$->attr.name = copyString(tokenString);
-                  }
-            | ID  { savedName = copyString(tokenString);
-                   savedLineNo = lineno; }
-              LBRACK exp RBRACK
+var         : id  {$$ = $1;}
+            | id LBRACK exp RBRACK
               {
                 $$ = newExpNode(IdK);
-                $$->attr.name = savedName;
-                $$->child[0] = $4;
+                $$->attr.name = $1->attr.name;
+                $$->child[0] = $3;
               }
             ;
 simp_exp    : soma_exp rela soma_exp
@@ -347,14 +328,12 @@ fator       : LPAREN exp RPAREN
                 $$->attr.val = atoi(tokenString);
               }
             ;
-ativ        : ID { savedName = copyString(tokenString);
-                   savedLineNo = lineno; }
-              LPAREN args RPAREN
+ativ        : id LPAREN args RPAREN
               {
-                $$ = newDeclNode(FunK);
-                $$->attr.name = savedName;
-                $$->lineno = savedLineNo;
-                $$->child[0] = $4;
+                $$ = newAtvNode(AtvK);
+                $$->attr.name = $1->attr.name;
+                $$->lineno = $1->lineno;
+                $$->child[0] = $3;
               }
             ;
 args        : arg_list

@@ -10,6 +10,7 @@
 #include "scan.h"
 /* lexeme of identifier or reserved word */
 char tokenString[MAXTOKENLEN+1];
+char ID_name[MAXTOKENLEN+1];
 %}
 digit       [0-9]
 number      {digit}+
@@ -44,7 +45,8 @@ whitespace  [ \t]+
 ";"             {return SEMI;}
 ","             {return COMA;}
 {number}        {return NUM;}
-{identifier}    {return ID;}
+{identifier}    {strncpy(ID_name,yytext,MAXTOKENLEN);
+                  return ID;}
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
 "/*"            { char c1 = 'c', c2;
