@@ -50,10 +50,14 @@ whitespace  [ \t]+
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
 "/*"            { char c1 = 'c', c2;
+                  int start_line = lineno;
                   do
                   { c1 = c2; 
                     c2 = input();
-                    if (c2 == EOF) break;
+                    if (c2 == 0) {
+                      printf("Error: comment characters opened on line %d, but not closed.", start_line);
+                      break;
+                    }
                     if (c2 == '\n') lineno++;
                   } while ( !(c1 == '*' && c2 == '/') );
                 }

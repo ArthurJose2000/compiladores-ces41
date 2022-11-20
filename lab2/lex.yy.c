@@ -915,25 +915,29 @@ case 30:
 YY_RULE_SETUP
 #line 52 "cminus.l"
 { char c1 = 'c', c2;
+                  int start_line = lineno;
                   do
                   { c1 = c2; 
                     c2 = input();
-                    if (c2 == EOF) break;
+                    if (c2 == 0) {
+                      printf("Error: comment characters opened on line %d, but not closed.", start_line);
+                      break;
+                    }
                     if (c2 == '\n') lineno++;
                   } while ( !(c1 == '*' && c2 == '/') );
                 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 60 "cminus.l"
+#line 64 "cminus.l"
 {return ERROR;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 62 "cminus.l"
+#line 66 "cminus.l"
 ECHO;
 	YY_BREAK
-#line 937 "lex.yy.c"
+#line 941 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1938,7 +1942,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 62 "cminus.l"
+#line 66 "cminus.l"
 
 TokenType getToken(void)
 { static int firstTime = TRUE;
