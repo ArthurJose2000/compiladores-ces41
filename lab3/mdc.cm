@@ -27,6 +27,7 @@ void main(void)
 {
    int x;
    int y;
+   int z;
    int ii;
    x = input();
    y = input();

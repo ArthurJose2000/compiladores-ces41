@@ -57,6 +57,7 @@ var_decl    : INT id SEMI
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Integer;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                 }
@@ -66,6 +67,7 @@ var_decl    : INT id SEMI
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Void;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                 }
@@ -73,8 +75,10 @@ var_decl    : INT id SEMI
                 {
                   $$ = newTypeNode();
                   $$->type = Integer;
+                  
 
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Integer;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
 
@@ -87,6 +91,7 @@ var_decl    : INT id SEMI
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Void;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
 
@@ -100,6 +105,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->type = Integer;
 
                   $$->child[0] = newDeclNode(FunK); 
+                  $$->child[0]->type = Integer;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                   $$->child[0]->scope_name = $2->attr.name;
@@ -113,6 +119,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(FunK); 
+                  $$->child[0]->type = Void;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                   $$->child[0]->scope_name = $2->attr.name;
@@ -147,6 +154,7 @@ param       : INT id
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Integer;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                 }
@@ -156,6 +164,7 @@ param       : INT id
                   $$->lineno = savedLineNo;
                   
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Void;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
                 }
@@ -165,6 +174,7 @@ param       : INT id
                   $$->type = Integer;
 
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Integer;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
 
@@ -177,6 +187,7 @@ param       : INT id
                   $$->type = Void;
 
                   $$->child[0] = newDeclNode(VarK);
+                  $$->child[0]->type = Void;
                   $$->child[0]->attr.name = $2->attr.name;
                   $$->child[0]->lineno = $2->lineno;
 

@@ -248,6 +248,7 @@ void scope_update(TreeNode * node, char* scopename){
   }
 }
 
+
 /* Variable indentno is used by printTree to
  * store current number of spaces to indent
  */

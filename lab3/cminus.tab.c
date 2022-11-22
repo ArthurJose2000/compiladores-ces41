@@ -564,13 +564,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    33,    33,    36,    45,    47,    48,    50,    54,    63,
-      72,    72,    84,    84,    97,   110,   124,   126,   133,   142,
-     144,   153,   162,   174,   187,   198,   208,   210,   219,   221,
-     222,   223,   224,   225,   227,   229,   232,   237,   244,   250,
-     251,   256,   262,   264,   265,   272,   278,   281,   283,   285,
-     287,   289,   291,   294,   300,   303,   305,   308,   314,   317,
-     319,   322,   324,   326,   328,   333,   341,   343,   345,   354
+       0,    33,    33,    36,    45,    47,    48,    50,    54,    64,
+      74,    74,    88,    88,   102,   116,   131,   133,   140,   149,
+     151,   161,   171,   184,   198,   209,   219,   221,   230,   232,
+     233,   234,   235,   236,   238,   240,   243,   248,   255,   261,
+     262,   267,   273,   275,   276,   283,   289,   292,   294,   296,
+     298,   300,   302,   305,   311,   314,   316,   319,   325,   328,
+     330,   333,   335,   337,   339,   344,   352,   354,   356,   365
 };
 #endif
 
@@ -1260,76 +1260,82 @@ yyreduce:
                   yyval->lineno = savedLineNo;
                   
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Integer;
                   yyval->child[0]->attr.name = yyvsp[-1]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-1]->lineno;
                 }
-#line 1267 "cminus.tab.c"
+#line 1268 "cminus.tab.c"
     break;
 
   case 9: /* var_decl: VOID id SEMI  */
-#line 64 "cminus.y"
+#line 65 "cminus.y"
                 { yyval = newTypeNode();
                   yyval->type = Void;
                   yyval->lineno = savedLineNo;
                   
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Void;
                   yyval->child[0]->attr.name = yyvsp[-1]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-1]->lineno;
                 }
-#line 1280 "cminus.tab.c"
+#line 1282 "cminus.tab.c"
     break;
 
   case 10: /* $@1: %empty  */
-#line 72 "cminus.y"
+#line 74 "cminus.y"
                                 { savedValue = atoi(tokenString); }
-#line 1286 "cminus.tab.c"
+#line 1288 "cminus.tab.c"
     break;
 
   case 11: /* var_decl: INT id LBRACK NUM $@1 RBRACK SEMI  */
-#line 73 "cminus.y"
+#line 75 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Integer;
+                  
 
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Integer;
                   yyval->child[0]->attr.name = yyvsp[-5]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-5]->lineno;
 
                   yyval->child[0]->child[0] = newExpNode(ConstK);
                   yyval->child[0]->child[0]->attr.val = savedValue;
                 }
-#line 1302 "cminus.tab.c"
+#line 1306 "cminus.tab.c"
     break;
 
   case 12: /* $@2: %empty  */
-#line 84 "cminus.y"
+#line 88 "cminus.y"
                                  { savedValue = atoi(tokenString); }
-#line 1308 "cminus.tab.c"
+#line 1312 "cminus.tab.c"
     break;
 
   case 13: /* var_decl: VOID id LBRACK NUM $@2 RBRACK SEMI  */
-#line 85 "cminus.y"
+#line 89 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Void;
 
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Void;
                   yyval->child[0]->attr.name = yyvsp[-5]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-5]->lineno;
 
                   yyval->child[0]->child[0] = newExpNode(ConstK);
                   yyval->child[0]->child[0]->attr.val = savedValue;
                 }
-#line 1324 "cminus.tab.c"
+#line 1329 "cminus.tab.c"
     break;
 
   case 14: /* fun_decl: INT id LPAREN params RPAREN comp_decl  */
-#line 98 "cminus.y"
+#line 103 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Integer;
 
                   yyval->child[0] = newDeclNode(FunK); 
+                  yyval->child[0]->type = Integer;
                   yyval->child[0]->attr.name = yyvsp[-4]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-4]->lineno;
                   yyval->child[0]->scope_name = yyvsp[-4]->attr.name;
@@ -1337,16 +1343,17 @@ yyreduce:
                   yyval->child[0]->child[0] = yyvsp[-2];
                   yyval->child[0]->child[1] = yyvsp[0];
                 }
-#line 1341 "cminus.tab.c"
+#line 1347 "cminus.tab.c"
     break;
 
   case 15: /* fun_decl: VOID id LPAREN params RPAREN comp_decl  */
-#line 111 "cminus.y"
+#line 117 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Void;
 
                   yyval->child[0] = newDeclNode(FunK); 
+                  yyval->child[0]->type = Void;
                   yyval->child[0]->attr.name = yyvsp[-4]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-4]->lineno;
                   yyval->child[0]->scope_name = yyvsp[-4]->attr.name;
@@ -1354,27 +1361,27 @@ yyreduce:
                   yyval->child[0]->child[0] = yyvsp[-2];
                   yyval->child[0]->child[1] = yyvsp[0];
                 }
-#line 1358 "cminus.tab.c"
+#line 1365 "cminus.tab.c"
     break;
 
   case 16: /* params: param_list  */
-#line 125 "cminus.y"
+#line 132 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1364 "cminus.tab.c"
+#line 1371 "cminus.tab.c"
     break;
 
   case 17: /* params: VOID  */
-#line 127 "cminus.y"
+#line 134 "cminus.y"
               { 
                 yyval = newDeclNode(VarK);
                 yyval->attr.name = "void";
                 yyval->type = Void;
               }
-#line 1374 "cminus.tab.c"
+#line 1381 "cminus.tab.c"
     break;
 
   case 18: /* param_list: param_list COMA param  */
-#line 134 "cminus.y"
+#line 141 "cminus.y"
               { YYSTYPE t = yyvsp[-2];
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -1383,75 +1390,79 @@ yyreduce:
                      yyval = yyvsp[-2]; }
                      else yyval = yyvsp[0];
                  }
-#line 1387 "cminus.tab.c"
+#line 1394 "cminus.tab.c"
     break;
 
   case 19: /* param_list: param  */
-#line 142 "cminus.y"
+#line 149 "cminus.y"
                     { yyval = yyvsp[0]; }
-#line 1393 "cminus.tab.c"
+#line 1400 "cminus.tab.c"
     break;
 
   case 20: /* param: INT id  */
-#line 145 "cminus.y"
+#line 152 "cminus.y"
                 { yyval = newTypeNode();
                   yyval->type = Integer;
                   yyval->lineno = savedLineNo;
                   
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Integer;
                   yyval->child[0]->attr.name = yyvsp[0]->attr.name;
                   yyval->child[0]->lineno = yyvsp[0]->lineno;
                 }
-#line 1406 "cminus.tab.c"
+#line 1414 "cminus.tab.c"
     break;
 
   case 21: /* param: VOID id  */
-#line 154 "cminus.y"
+#line 162 "cminus.y"
                 { yyval = newTypeNode();
                   yyval->type = Void;
                   yyval->lineno = savedLineNo;
                   
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Void;
                   yyval->child[0]->attr.name = yyvsp[0]->attr.name;
                   yyval->child[0]->lineno = yyvsp[0]->lineno;
                 }
-#line 1419 "cminus.tab.c"
+#line 1428 "cminus.tab.c"
     break;
 
   case 22: /* param: INT id LBRACK RBRACK  */
-#line 163 "cminus.y"
+#line 172 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Integer;
 
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Integer;
                   yyval->child[0]->attr.name = yyvsp[-2]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-2]->lineno;
 
                   yyval->child[0]->child[0] = newExpNode(ConstK);
                   yyval->child[0]->child[0]->type = Void;
                 }
-#line 1435 "cminus.tab.c"
+#line 1445 "cminus.tab.c"
     break;
 
   case 23: /* param: VOID id LBRACK RBRACK  */
-#line 175 "cminus.y"
+#line 185 "cminus.y"
                 {
                   yyval = newTypeNode();
                   yyval->type = Void;
 
                   yyval->child[0] = newDeclNode(VarK);
+                  yyval->child[0]->type = Void;
                   yyval->child[0]->attr.name = yyvsp[-2]->attr.name;
                   yyval->child[0]->lineno = yyvsp[-2]->lineno;
 
                   yyval->child[0]->child[0] = newExpNode(ConstK);
                   yyval->child[0]->child[0]->type = Void;
                 }
-#line 1451 "cminus.tab.c"
+#line 1462 "cminus.tab.c"
     break;
 
   case 24: /* comp_decl: LBRACE loc_decls stmt_list RBRACE  */
-#line 188 "cminus.y"
+#line 199 "cminus.y"
               { 
                 YYSTYPE t = yyvsp[-2];
                 if (t != NULL)
@@ -1461,11 +1472,11 @@ yyreduce:
                   yyval = yyvsp[-2]; }
                 else yyval = yyvsp[-1];
               }
-#line 1465 "cminus.tab.c"
+#line 1476 "cminus.tab.c"
     break;
 
   case 25: /* loc_decls: loc_decls var_decl  */
-#line 199 "cminus.y"
+#line 210 "cminus.y"
               { 
                 YYSTYPE t = yyvsp[-1];
                 if (t != NULL)
@@ -1475,17 +1486,17 @@ yyreduce:
                   yyval = yyvsp[-1]; }
                 else yyval = yyvsp[0];
               }
-#line 1479 "cminus.tab.c"
+#line 1490 "cminus.tab.c"
     break;
 
   case 26: /* loc_decls: %empty  */
-#line 208 "cminus.y"
+#line 219 "cminus.y"
                      {yyval = NULL;}
-#line 1485 "cminus.tab.c"
+#line 1496 "cminus.tab.c"
     break;
 
   case 27: /* stmt_list: stmt_list stmt  */
-#line 211 "cminus.y"
+#line 222 "cminus.y"
               { YYSTYPE t = yyvsp[-1];
                 if (t != NULL)
                 { while (t->sibling != NULL)
@@ -1494,290 +1505,290 @@ yyreduce:
                   yyval = yyvsp[-1]; }
                   else yyval = yyvsp[0];
               }
-#line 1498 "cminus.tab.c"
+#line 1509 "cminus.tab.c"
     break;
 
   case 28: /* stmt_list: %empty  */
-#line 219 "cminus.y"
+#line 230 "cminus.y"
                      {yyval = NULL;}
-#line 1504 "cminus.tab.c"
+#line 1515 "cminus.tab.c"
     break;
 
   case 29: /* stmt: exp_decl  */
-#line 221 "cminus.y"
+#line 232 "cminus.y"
                        { yyval = yyvsp[0]; }
-#line 1510 "cminus.tab.c"
+#line 1521 "cminus.tab.c"
     break;
 
   case 30: /* stmt: comp_decl  */
-#line 222 "cminus.y"
+#line 233 "cminus.y"
                         { yyval = yyvsp[0]; }
-#line 1516 "cminus.tab.c"
+#line 1527 "cminus.tab.c"
     break;
 
   case 31: /* stmt: sel_decl  */
-#line 223 "cminus.y"
+#line 234 "cminus.y"
                        { yyval = yyvsp[0]; }
-#line 1522 "cminus.tab.c"
+#line 1533 "cminus.tab.c"
     break;
 
   case 32: /* stmt: itera_decl  */
-#line 224 "cminus.y"
+#line 235 "cminus.y"
                          { yyval = yyvsp[0]; }
-#line 1528 "cminus.tab.c"
+#line 1539 "cminus.tab.c"
     break;
 
   case 33: /* stmt: ret_decl  */
-#line 225 "cminus.y"
+#line 236 "cminus.y"
                        { yyval = yyvsp[0]; }
-#line 1534 "cminus.tab.c"
+#line 1545 "cminus.tab.c"
     break;
 
   case 34: /* exp_decl: exp SEMI  */
-#line 228 "cminus.y"
+#line 239 "cminus.y"
               { yyval = yyvsp[-1]; }
-#line 1540 "cminus.tab.c"
+#line 1551 "cminus.tab.c"
     break;
 
   case 35: /* exp_decl: SEMI  */
-#line 230 "cminus.y"
+#line 241 "cminus.y"
               { yyval = NULL; }
-#line 1546 "cminus.tab.c"
+#line 1557 "cminus.tab.c"
     break;
 
   case 36: /* sel_decl: IF LPAREN exp RPAREN stmt  */
-#line 233 "cminus.y"
+#line 244 "cminus.y"
               { yyval = newStmtNode(IfK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
               }
-#line 1555 "cminus.tab.c"
+#line 1566 "cminus.tab.c"
     break;
 
   case 37: /* sel_decl: IF LPAREN exp RPAREN stmt ELSE stmt  */
-#line 238 "cminus.y"
+#line 249 "cminus.y"
               { yyval = newStmtNode(IfK);
                 yyval->child[0] = yyvsp[-4];
                 yyval->child[1] = yyvsp[-2];
                 yyval->child[2] = yyvsp[0];
               }
-#line 1565 "cminus.tab.c"
+#line 1576 "cminus.tab.c"
     break;
 
   case 38: /* itera_decl: WHILE LPAREN exp RPAREN stmt  */
-#line 245 "cminus.y"
+#line 256 "cminus.y"
               { yyval = newStmtNode(RepeatK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
               }
-#line 1574 "cminus.tab.c"
+#line 1585 "cminus.tab.c"
     break;
 
   case 39: /* ret_decl: RETURN SEMI  */
-#line 250 "cminus.y"
+#line 261 "cminus.y"
                           { yyval = newStmtNode(ReturnK); }
-#line 1580 "cminus.tab.c"
+#line 1591 "cminus.tab.c"
     break;
 
   case 40: /* ret_decl: RETURN exp SEMI  */
-#line 252 "cminus.y"
+#line 263 "cminus.y"
                 { yyval = newStmtNode(ReturnK);
                   yyval->child[0] = yyvsp[-1]; 
                 }
-#line 1588 "cminus.tab.c"
+#line 1599 "cminus.tab.c"
     break;
 
   case 41: /* exp: var ASSIGN exp  */
-#line 257 "cminus.y"
+#line 268 "cminus.y"
               { yyval = newExpNode(OpK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
                 yyval->attr.op = ASSIGN;
               }
-#line 1598 "cminus.tab.c"
+#line 1609 "cminus.tab.c"
     break;
 
   case 42: /* exp: simp_exp  */
-#line 262 "cminus.y"
+#line 273 "cminus.y"
                        { yyval = yyvsp[0]; }
-#line 1604 "cminus.tab.c"
+#line 1615 "cminus.tab.c"
     break;
 
   case 43: /* var: id  */
-#line 264 "cminus.y"
+#line 275 "cminus.y"
                   {yyval = yyvsp[0];}
-#line 1610 "cminus.tab.c"
+#line 1621 "cminus.tab.c"
     break;
 
   case 44: /* var: id LBRACK exp RBRACK  */
-#line 266 "cminus.y"
+#line 277 "cminus.y"
               {
                 yyval = newExpNode(IdK);
                 yyval->attr.name = yyvsp[-3]->attr.name;
                 yyval->child[0] = yyvsp[-1];
               }
-#line 1620 "cminus.tab.c"
+#line 1631 "cminus.tab.c"
     break;
 
   case 45: /* simp_exp: soma_exp rela soma_exp  */
-#line 273 "cminus.y"
+#line 284 "cminus.y"
               { yyval = newExpNode(OpK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
                 yyval->attr.op = yyvsp[-1];
               }
-#line 1630 "cminus.tab.c"
+#line 1641 "cminus.tab.c"
     break;
 
   case 46: /* simp_exp: soma_exp  */
-#line 279 "cminus.y"
+#line 290 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1636 "cminus.tab.c"
+#line 1647 "cminus.tab.c"
     break;
 
   case 47: /* rela: LEQT  */
-#line 282 "cminus.y"
+#line 293 "cminus.y"
               { yyval = LEQT; }
-#line 1642 "cminus.tab.c"
+#line 1653 "cminus.tab.c"
     break;
 
   case 48: /* rela: LT  */
-#line 284 "cminus.y"
+#line 295 "cminus.y"
               { yyval = LT; }
-#line 1648 "cminus.tab.c"
+#line 1659 "cminus.tab.c"
     break;
 
   case 49: /* rela: GT  */
-#line 286 "cminus.y"
+#line 297 "cminus.y"
               { yyval = GT; }
-#line 1654 "cminus.tab.c"
+#line 1665 "cminus.tab.c"
     break;
 
   case 50: /* rela: GEQT  */
-#line 288 "cminus.y"
+#line 299 "cminus.y"
               { yyval = GEQT; }
-#line 1660 "cminus.tab.c"
+#line 1671 "cminus.tab.c"
     break;
 
   case 51: /* rela: EQ  */
-#line 290 "cminus.y"
+#line 301 "cminus.y"
               { yyval = EQ; }
-#line 1666 "cminus.tab.c"
+#line 1677 "cminus.tab.c"
     break;
 
   case 52: /* rela: NEQ  */
-#line 292 "cminus.y"
+#line 303 "cminus.y"
               { yyval = NEQ; }
-#line 1672 "cminus.tab.c"
+#line 1683 "cminus.tab.c"
     break;
 
   case 53: /* soma_exp: soma_exp soma termo  */
-#line 295 "cminus.y"
+#line 306 "cminus.y"
               { yyval = newExpNode(OpK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
                 yyval->attr.op = yyvsp[-1];
               }
-#line 1682 "cminus.tab.c"
+#line 1693 "cminus.tab.c"
     break;
 
   case 54: /* soma_exp: termo  */
-#line 301 "cminus.y"
+#line 312 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1688 "cminus.tab.c"
+#line 1699 "cminus.tab.c"
     break;
 
   case 55: /* soma: PLUS  */
-#line 304 "cminus.y"
+#line 315 "cminus.y"
               { yyval = PLUS; }
-#line 1694 "cminus.tab.c"
+#line 1705 "cminus.tab.c"
     break;
 
   case 56: /* soma: MINUS  */
-#line 306 "cminus.y"
+#line 317 "cminus.y"
               { yyval = MINUS; }
-#line 1700 "cminus.tab.c"
+#line 1711 "cminus.tab.c"
     break;
 
   case 57: /* termo: termo mult fator  */
-#line 309 "cminus.y"
+#line 320 "cminus.y"
               { yyval = newExpNode(OpK);
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
                 yyval->attr.op = yyvsp[-1];
               }
-#line 1710 "cminus.tab.c"
+#line 1721 "cminus.tab.c"
     break;
 
   case 58: /* termo: fator  */
-#line 315 "cminus.y"
+#line 326 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1716 "cminus.tab.c"
+#line 1727 "cminus.tab.c"
     break;
 
   case 59: /* mult: TIMES  */
-#line 318 "cminus.y"
+#line 329 "cminus.y"
               { yyval = TIMES; }
-#line 1722 "cminus.tab.c"
+#line 1733 "cminus.tab.c"
     break;
 
   case 60: /* mult: OVER  */
-#line 320 "cminus.y"
+#line 331 "cminus.y"
               { yyval = OVER; }
-#line 1728 "cminus.tab.c"
+#line 1739 "cminus.tab.c"
     break;
 
   case 61: /* fator: LPAREN exp RPAREN  */
-#line 323 "cminus.y"
+#line 334 "cminus.y"
               { yyval = yyvsp[-1]; }
-#line 1734 "cminus.tab.c"
+#line 1745 "cminus.tab.c"
     break;
 
   case 62: /* fator: var  */
-#line 325 "cminus.y"
+#line 336 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1740 "cminus.tab.c"
+#line 1751 "cminus.tab.c"
     break;
 
   case 63: /* fator: ativ  */
-#line 327 "cminus.y"
+#line 338 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1746 "cminus.tab.c"
+#line 1757 "cminus.tab.c"
     break;
 
   case 64: /* fator: NUM  */
-#line 329 "cminus.y"
+#line 340 "cminus.y"
               { yyval = newExpNode(ConstK);
                 yyval->attr.val = atoi(tokenString);
               }
-#line 1754 "cminus.tab.c"
+#line 1765 "cminus.tab.c"
     break;
 
   case 65: /* ativ: id LPAREN args RPAREN  */
-#line 334 "cminus.y"
+#line 345 "cminus.y"
               {
                 yyval = newAtvNode(AtvK);
                 yyval->attr.name = yyvsp[-3]->attr.name;
                 yyval->lineno = yyvsp[-3]->lineno;
                 yyval->child[0] = yyvsp[-1];
               }
-#line 1765 "cminus.tab.c"
+#line 1776 "cminus.tab.c"
     break;
 
   case 66: /* args: arg_list  */
-#line 342 "cminus.y"
+#line 353 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1771 "cminus.tab.c"
+#line 1782 "cminus.tab.c"
     break;
 
   case 67: /* args: %empty  */
-#line 343 "cminus.y"
+#line 354 "cminus.y"
                      {yyval = NULL;}
-#line 1777 "cminus.tab.c"
+#line 1788 "cminus.tab.c"
     break;
 
   case 68: /* arg_list: arg_list COMA exp  */
-#line 346 "cminus.y"
+#line 357 "cminus.y"
               { YYSTYPE t = yyvsp[-2];
                 if (t != NULL)
                 { while (t->sibling != NULL)
@@ -1786,17 +1797,17 @@ yyreduce:
                   yyval = yyvsp[-2]; }
                   else yyval = yyvsp[0];
               }
-#line 1790 "cminus.tab.c"
+#line 1801 "cminus.tab.c"
     break;
 
   case 69: /* arg_list: exp  */
-#line 355 "cminus.y"
+#line 366 "cminus.y"
               { yyval = yyvsp[0]; }
-#line 1796 "cminus.tab.c"
+#line 1807 "cminus.tab.c"
     break;
 
 
-#line 1800 "cminus.tab.c"
+#line 1811 "cminus.tab.c"
 
       default: break;
     }
@@ -1989,7 +2000,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 357 "cminus.y"
+#line 368 "cminus.y"
 
 
 int yyerror(char * message)
