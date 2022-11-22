@@ -1,0 +1,9 @@
+int x;
+int y;
+int z;
+int w;
+int main (int oi, int io, int ooi){
+   int foiComplicadoHein;
+   int sugado;
+   sugado = 999;
+}
