@@ -107,7 +107,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->child[0]->child[0] = $4;
                   $$->child[0]->child[0]->scope_name = $2->attr.name;
                   $$->child[0]->child[1] = $6;
-                  $$->child[0]->child[0]->scope_name = $2->attr.name;
+                  $$->child[0]->child[1]->scope_name = $2->attr.name;
                 }
             | VOID id LPAREN params RPAREN comp_decl
                 {
@@ -122,7 +122,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->child[0]->child[0] = $4;
                   $$->child[0]->child[0]->scope_name = $2->attr.name;
                   $$->child[0]->child[1] = $6;
-                  $$->child[0]->child[0]->scope_name = $2->attr.name;
+                  $$->child[0]->child[1]->scope_name = $2->attr.name;
                 }
             ;
 params      : param_list 
