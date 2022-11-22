@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "util.h"
 
+
 /* Procedure printToken prints a token
  * and its lexeme to the listing file
  */
@@ -207,6 +208,13 @@ TreeNode *newExpNode(ExpKind kind)
   }
   return t;
 }
+/**/
+/*
+char * scopeName(char* name, int x){
+  char* scope_name;
+  int len = strlen(name)+1;
+
+}*/
 
 /* Function copyString allocates and makes a new
  * copy of an existing string
@@ -246,6 +254,12 @@ static int scope_lvl = 0;
 /* Variable to track scope lineno of nodes */
 static int scope_lineno = 0;
 
+/*Variable to count ifs*/
+static int if_count = 0;
+
+/*Variable to count whiles*/
+static int while_count = 0;
+
 /* macros to increase/decrease indentation */
 #define INDENT indentno += 2
 #define UNINDENT indentno -= 2
@@ -264,6 +278,9 @@ static void printSpaces(void)
 void printTree(TreeNode *tree)
 {
   int i;
+  //char *current_scope_name = "if";
+  char *current_if_count;
+  char *current_while_count;
   INDENT;
   while (tree != NULL)
   {
@@ -273,15 +290,25 @@ void printTree(TreeNode *tree)
       switch (tree->kind.stmt)
       {
       case IfK:
+        if_count++;
         fprintf(listing, "If in scope lvl: %d\n", scope_lvl);
         scope_update(tree->child[0], tree->scope_name);
-        scope_update(tree->child[1], "if");
-        scope_update(tree->child[2], "else");
+        //sprintf(current_if_count, "%d", if_count);
+        char current_scope_name[10] = "if";
+        //strcat(current_scope_name, current_scope_name);
+        scope_update(tree->child[1], current_scope_name);
+        //current_scope_name = "else";
+        //strcat(current_scope_name, current_if_count);
+        scope_update(tree->child[2], "1");
         scope_lvl++;
         break;
       case RepeatK:
+        while_count++;
         scope_update(tree->child[0], tree->scope_name);
-        scope_update(tree->child[1], "while");
+        //sprintf(current_while_count, "%d", while_count);
+        //current_scope_name = "while";
+        //strcat(current_scope_name, current_while_count);
+        scope_update(tree->child[1], "1");
         scope_lvl++;
         fprintf(listing, "Repeat\n");
         break;
@@ -366,8 +393,6 @@ void printTree(TreeNode *tree)
         scope_lvl--;
       }
     }
-
-
     tree = tree->sibling;
   }
   UNINDENT;
