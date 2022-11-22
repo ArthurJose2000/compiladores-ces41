@@ -264,19 +264,16 @@ void printTree(TreeNode *tree)
       switch (tree->kind.stmt)
       {
       case IfK:
-        scope_lineno = tree->scope_lineno;
-        fprintf(listing, "If in scope lvl: %d scope_lin: %d\n", scope_lvl, tree->lineno);
+        fprintf(listing, "If in scope lvl: %d\n", scope_lvl);
         scope_lvl++;
         break;
       case RepeatK:
-        scope_lineno = tree->lineno;
         scope_lvl++;
         fprintf(listing, "Repeat\n");
         break;
       case AssignK:
         tree->scope_lvl = scope_lvl;
-        tree->scope_lineno = scope_lineno;
-        fprintf(listing, "Assign to: %s scope_lvl: %d scope_lin: %d\n", tree->attr.name, scope_lvl, scope_lineno);
+        fprintf(listing, "Assign to: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       case ReturnK:
         fprintf(listing, "Return\n");
@@ -299,8 +296,7 @@ void printTree(TreeNode *tree)
         break;
       case IdK:
         tree->scope_lvl=scope_lvl;
-        tree->scope_lineno=scope_lineno;
-        fprintf(listing, "Id: %s scope_lvl: %d scope_lin: %d\n", tree->attr.name, scope_lvl, scope_lineno);
+        fprintf(listing, "Id: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       default:
         fprintf(listing, "Unknown ExpNode kind\n");
@@ -313,11 +309,9 @@ void printTree(TreeNode *tree)
       {
       case VarK:
         tree->scope_lvl=scope_lvl;
-        tree->scope_lineno=scope_lineno;
-        fprintf(listing, "Decl_Var: %s scope_lvl: %d scope_lin: %d\n", tree->attr.name, scope_lvl, scope_lineno);
+        fprintf(listing, "Decl_Var: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       case FunK:
-        scope_lineno = tree->lineno;
         tree->scope_lvl=scope_lvl;
         fprintf(listing, "Decl_Fun: %s in scope: %d\n", tree->attr.name, scope_lvl);
         scope_lvl++;
@@ -346,6 +340,7 @@ void printTree(TreeNode *tree)
     for (i = 0; i < MAXCHILDREN; i++)
       printTree(tree->child[i]);
     
+    
     if (tree->nodekind == StmtK){
       if (tree->kind.stmt == IfK || tree->nodekind == RepeatK){
           scope_lvl--;
@@ -355,6 +350,8 @@ void printTree(TreeNode *tree)
         scope_lvl--;
       }
     }
+
+
     tree = tree->sibling;
   }
   UNINDENT;

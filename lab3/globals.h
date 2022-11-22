@@ -76,8 +76,8 @@ typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
      struct treeNode * sibling;
      int lineno;
-     int scope_lineno;
      int scope_lvl;
+     char *scope_name;
      NodeKind nodekind;
      union { StmtKind stmt; ExpKind exp; DeclKind decl;} kind;
      union { TokenType op;
