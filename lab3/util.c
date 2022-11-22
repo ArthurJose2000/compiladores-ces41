@@ -226,6 +226,15 @@ char *copyString(char *s)
   return t;
 }
 
+/*Update children's scope name*/
+void scope_update(TreeNode * node, char* scopename){
+  TreeNode * t = node;
+  while (t != NULL && t->child[0] != NULL){
+    t->child[0]->scope_name = scopename;
+    t = t->sibling;
+  }
+}
+
 /* Variable indentno is used by printTree to
  * store current number of spaces to indent
  */
@@ -265,9 +274,14 @@ void printTree(TreeNode *tree)
       {
       case IfK:
         fprintf(listing, "If in scope lvl: %d\n", scope_lvl);
+        scope_update(tree->child[0], tree->scope_name);
+        scope_update(tree->child[1], "if");
+        scope_update(tree->child[2], "else");
         scope_lvl++;
         break;
       case RepeatK:
+        scope_update(tree->child[0], tree->scope_name);
+        scope_update(tree->child[1], "while");
         scope_lvl++;
         fprintf(listing, "Repeat\n");
         break;
@@ -313,6 +327,8 @@ void printTree(TreeNode *tree)
         break;
       case FunK:
         tree->scope_lvl=scope_lvl;
+        scope_update(tree->child[0], tree->scope_name);
+        scope_update(tree->child[1], tree->scope_name);
         fprintf(listing, "Decl_Fun: %s in scope: %d\n", tree->attr.name, scope_lvl);
         scope_lvl++;
         break;

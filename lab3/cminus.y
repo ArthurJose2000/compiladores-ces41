@@ -105,11 +105,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->child[0]->scope_name = $2->attr.name;
 
                   $$->child[0]->child[0] = $4;
-                  if ($$->child[0]->child[0]->child[0])
-                    $$->child[0]->child[0]->child[0]->scope_name = $2->attr.name;
                   $$->child[0]->child[1] = $6;
-                  if ($$->child[0]->child[1]->child[0])
-                    $$->child[0]->child[1]->child[0]->scope_name = $2->attr.name;
                 }
             | VOID id LPAREN params RPAREN comp_decl
                 {
@@ -122,11 +118,7 @@ fun_decl    : INT id LPAREN params RPAREN comp_decl
                   $$->child[0]->scope_name = $2->attr.name;
 
                   $$->child[0]->child[0] = $4;
-                  if ($$->child[0]->child[0]->child[0])
-                    $$->child[0]->child[0]->child[0]->scope_name = $2->attr.name;
                   $$->child[0]->child[1] = $6;
-                  if ($$->child[0]->child[1]->child[0])
-                    $$->child[0]->child[1]->child[0]->scope_name = $2->attr.name;
                 }
             ;
 params      : param_list 
@@ -240,26 +232,19 @@ exp_decl    : exp SEMI
 sel_decl    : IF LPAREN exp RPAREN stmt 
               { $$ = newStmtNode(IfK);
                 $$->child[0] = $3;
-                $$->child[0]->scope_name = "if";
                 $$->child[1] = $5;
-                $$->child[1]->scope_name = "if";
               }
             | IF LPAREN exp RPAREN stmt ELSE stmt
               { $$ = newStmtNode(IfK);
                 $$->child[0] = $3;
-                $$->child[0]->scope_name = "if";
                 $$->child[1] = $5;
-                $$->child[1]->scope_name = "if";
                 $$->child[2] = $7;
-                $$->child[2]->scope_name = "else";
               }
             ;
 itera_decl  : WHILE LPAREN exp RPAREN stmt
               { $$ = newStmtNode(RepeatK);
                 $$->child[0] = $3;
-                $$->child[0]->scope_name = "while";
                 $$->child[1] = $5;
-                $$->child[1]->scope_name = "while";
               }
             ;
 ret_decl    : RETURN SEMI { $$ = newStmtNode(ReturnK); }
