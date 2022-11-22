@@ -209,12 +209,17 @@ TreeNode *newExpNode(ExpKind kind)
   return t;
 }
 /**/
-/*
+
 char * scopeName(char* name, int x){
   char* scope_name;
-  int len = strlen(name)+1;
-
-}*/
+  char intstr[10];
+  int len = strlen(name)+10;
+  scope_name = malloc(len);
+  strcpy(scope_name, name);
+  sprintf(intstr, "%d", x); 
+  strcat(scope_name, intstr);
+  return scope_name;
+}
 
 /* Function copyString allocates and makes a new
  * copy of an existing string
@@ -293,22 +298,14 @@ void printTree(TreeNode *tree)
         if_count++;
         fprintf(listing, "If in scope lvl: %d\n", scope_lvl);
         scope_update(tree->child[0], tree->scope_name);
-        //sprintf(current_if_count, "%d", if_count);
-        char current_scope_name[10] = "if";
-        //strcat(current_scope_name, current_scope_name);
-        scope_update(tree->child[1], current_scope_name);
-        //current_scope_name = "else";
-        //strcat(current_scope_name, current_if_count);
-        scope_update(tree->child[2], "1");
+        scope_update(tree->child[1], scopeName("if", if_count));
+        scope_update(tree->child[2], scopeName("else", if_count));
         scope_lvl++;
         break;
       case RepeatK:
         while_count++;
         scope_update(tree->child[0], tree->scope_name);
-        //sprintf(current_while_count, "%d", while_count);
-        //current_scope_name = "while";
-        //strcat(current_scope_name, current_while_count);
-        scope_update(tree->child[1], "1");
+        scope_update(tree->child[1], scopeName("while", while_count));
         scope_lvl++;
         fprintf(listing, "Repeat\n");
         break;

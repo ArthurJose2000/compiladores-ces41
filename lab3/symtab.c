@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symtab.h"
+#include "globals.h"
 
 /* SIZE is the size of the hash table */
 #define SIZE 211
@@ -50,7 +51,9 @@ typedef struct BucketListRec
      LineList lines;
      int memloc ; /* memory location for variable */
      struct BucketListRec * next;
-     char * scope_name;
+     char * scope_name;   /*Name of the scope this ID is in*/
+     ExpType type;    /*Distinguish between Integer and Void types*/
+     DeclKind kind;   /*Distinguish between variables and functions*/
    } * BucketList;
 
 /* the hash table */

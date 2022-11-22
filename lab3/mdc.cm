@@ -12,6 +12,10 @@ int gdc (int u, int v)
       int j;
       return gdc(v,u-u/v*v);
    } 
+   if (u == 0){
+      int ifdois;
+      ifdois = 2; 
+   }
    while(u!=10){
       int k;
       u = u+1;
