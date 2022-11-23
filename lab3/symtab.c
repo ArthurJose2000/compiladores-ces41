@@ -65,7 +65,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind ) {
+void st_insert( TreeNode *node, char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind ) {
 
   int h = hash(name);
   BucketList l =  hashTable[h];
@@ -76,7 +76,7 @@ void st_insert( char *name, int lineno, int scope_level, char *scope_name, ExpTy
   if (l != NULL)
     t = l->lines;
 
-  int id_search_case = search_ID(name, scope_name, scope_level, nodekind, kind);
+  int id_search_case = search_ID(node, name, scope_name, scope_level, nodekind, kind);
 
   switch (id_search_case) {
     case NEW_DECLARATION__ID_NOT_FOUND:
@@ -136,7 +136,7 @@ int st_lookup ( char * name )
   else return l->scope_level;
 }
 
-int search_ID(char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind) {
+int search_ID(TreeNode *node, char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind) {
 
   int h = hash(name);
   BucketList l =  hashTable[h];
@@ -154,9 +154,15 @@ int search_ID(char * name, char * scope_name, int scope_level, NodeKind nodekind
       return VARIABLE_IS_NOT_DECLARED; 
   }
   else if (scope_name == NULL || nodekind == ExpK) { /* gambiarra */
+    // updating node type
+    node->type = l->type;
+
     return IS_NOT_A_DECLARATION__NO_SCOPE_NAME_EXP; 
   }
   else if (nodekind == AtvK) {
+    // updating node type
+    node->type = l->type;
+    
     return IS_NOT_A_DECLARATION;
   }
   else { /* found in table, so just check more deeply */

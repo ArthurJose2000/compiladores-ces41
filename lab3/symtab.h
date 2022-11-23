@@ -15,7 +15,7 @@
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind );
+void st_insert( TreeNode *node, char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind );
 
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
@@ -39,7 +39,7 @@ enum id_search_case {
     FUNCTION_IS_NOT_DECLARED,
     VARIABLE_DECLARATION_WITH_SAME_NAME_OF_A_PREVIOUS_FUNCTION
 };
-int search_ID(char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind);
+int search_ID(TreeNode *node, char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind);
 
 /* Procedure printSymTab prints a formatted 
  * listing of the symbol table contents 
