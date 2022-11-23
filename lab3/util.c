@@ -312,9 +312,11 @@ void printTree(TreeNode *tree)
         break;
       case AssignK:
         tree->scope_lvl = scope_lvl;
+        scope_update(tree, tree->scope_name);
         fprintf(listing, "Assign to: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       case ReturnK:
+        scope_update(tree, tree->scope_name);
         fprintf(listing, "Return\n");
         break;
       default:
@@ -328,6 +330,7 @@ void printTree(TreeNode *tree)
       {
       case OpK:
         fprintf(listing, "Op: ");
+        scope_update(tree, tree->scope_name);
         printToken(tree->attr.op, "\0");
         break;
       case ConstK:
@@ -335,6 +338,7 @@ void printTree(TreeNode *tree)
         break;
       case IdK:
         tree->scope_lvl=scope_lvl;
+        scope_update(tree, tree->scope_name);
         fprintf(listing, "Id: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       default:
@@ -348,6 +352,7 @@ void printTree(TreeNode *tree)
       {
       case VarK:
         tree->scope_lvl=scope_lvl;
+        scope_update(tree, tree->scope_name);
         fprintf(listing, "Decl_Var: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
       case FunK:
@@ -374,6 +379,7 @@ void printTree(TreeNode *tree)
     else if (tree->nodekind == AtvK)
     {
       tree->scope_lvl=scope_lvl;
+      scope_update(tree, tree->scope_name);
       fprintf(listing, "Atv_Fun: %s in scope: %d\n", tree->attr.name, tree->scope_lvl);
     }
     else
@@ -381,7 +387,7 @@ void printTree(TreeNode *tree)
     for (i = 0; i < MAXCHILDREN; i++)
       printTree(tree->child[i]);
     
-    
+    /*Adjust scope level*/
     if (tree->nodekind == StmtK){
       if (tree->kind.stmt == IfK || tree->nodekind == RepeatK){
           scope_lvl--;

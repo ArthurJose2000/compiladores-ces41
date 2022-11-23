@@ -59,6 +59,40 @@ typedef struct BucketListRec
 /* the hash table */
 static BucketList hashTable[SIZE];
 
+/* new insert demo*/
+void st_insertV2( char * name, int lineno, int loc, char *scope_name, ExpType type, DeclKind kind ){
+  int h = hash(name);
+  int search_res = 0; //search_ID(name, scope_name, loc); ta dando mt errado a funcao search_ID() nao sei pq.
+  BucketList l = hashTable[h];
+  if (search_res == 0 || search_res == 1 || search_res == 3){ /*Variable not yet in table or in another scope of same or lower level, add it*/
+    while (l != NULL)
+      l = l->next;
+    l = (BucketList) malloc(sizeof(struct BucketListRec));
+    l->name = name;
+    l->lines = (LineList) malloc(sizeof(struct LineListRec));
+    l->lines->lineno = lineno;
+    l->memloc = loc;
+    l->type = type;
+    l->kind = kind;
+    l->scope_name = scope_name;
+    l->lines->next = NULL;
+    l->next = hashTable[h];
+    hashTable[h] = l; 
+  }else if(search_res == 2){  /*Variable found in higher scope level, add line number*/
+    while ((l != NULL) && (strcmp(name,l->name) != 0))
+      l = l->next;
+    if(l != NULL){
+      LineList t = l->lines;
+      while (t->next != NULL) t = t->next;
+      t->next = (LineList) malloc(sizeof(struct LineListRec));
+      t->next->lineno = lineno;
+      t->next->next = NULL;
+    } 
+  }else{ /*Invalid insert*/
+    printf("Invalid variable insert\n");
+  }
+}
+
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
  * loc = memory location is inserted only the
@@ -101,6 +135,61 @@ int st_lookup ( char * name )
   if (l == NULL) return -1;
   else return l->memloc;
 }
+
+
+/*Search the table for same IDs scope relations
+ * return 0 if not found same ID
+ * return 1 if found same ID in lower scope
+ * return 2 if found same ID in higher scope
+ * return 3 if found same ID in another scope of the same level
+ * return 4 if found same ID in the same scope
+ */
+int search_ID(char * name, char * scope_name, int memloc){
+  int h = hash(name);
+  BucketList l =  hashTable[h];
+  if(l == NULL) {return 0;}
+  while (l != NULL){
+    if(l == NULL) {printf("l is null in 4\n");}
+    if(strcmp(name,l->name) == 0){  /*Found same ID*/
+      if(l->memloc == memloc || strcmp(scope_name, l->scope_name) == 0){  /*Same level same scope*/
+        return 4;   /*Found in same scope*/
+      }
+    }
+    l = l->next;
+  }
+  l =  hashTable[h];
+  while (l != NULL)
+  { if(l == NULL) {printf("l is null in 2\n");}
+    if(strcmp(name,l->name) == 0){  /*Found same ID*/
+      if(l->memloc < memloc ){  /*Found in higher scope*/
+        return 2;  
+      }
+    l = l->next;
+    }
+  }
+  l =  hashTable[h];
+  while (l != NULL)
+  { if(l == NULL) {printf("l is null in 3\n");}
+    if(strcmp(name,l->name) == 0){  /*Found same ID*/
+      if(l->memloc == memloc || strcmp(scope_name, l->scope_name) != 0){  /*Same level different scope*/
+        return 3;  /*Found in another scope of the same level*/
+      }
+    l = l->next;
+    }
+  }
+  l =  hashTable[h];
+  while (l != NULL)
+  { if(l == NULL) {printf("l is null in 1\n");}
+    if(strcmp(name,l->name) == 0){  /*Found same ID*/
+      if(l->memloc > memloc ){  /*Found in lower scope*/
+        return 1;  
+      }
+    l = l->next;
+    }
+  }
+  return 0;   /*Not found in symbol table*/
+}
+
 
 /* Procedure printSymTab prints a formatted 
  * listing of the symbol table contents 
