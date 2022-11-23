@@ -68,11 +68,19 @@ void st_insert( char * name, int lineno, int scope_level, char *scope_name, ExpT
 
   int h = hash(name);
   BucketList l =  hashTable[h];
+  while ((l != NULL) && (strcmp(name,l->name) != 0))
+    l = l->next;
+  
+  LineList t;
+  if (l != NULL)
+    t = l->lines;
 
   int id_search_case = search_ID(name, scope_name, scope_level);
 
   switch (id_search_case) {
-    case ID_NOT_FOUND:
+    case NEW_DECLARATION__ID_NOT_FOUND:
+    case NEW_DECLARATION__ID_IN_A_HIGHER_SCOPE:
+    case NEW_DECLARATION__ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL:
       l = (BucketList) malloc(sizeof(struct BucketListRec));
       l->name = name;
       l->lines = (LineList) malloc(sizeof(struct LineListRec));
@@ -85,14 +93,10 @@ void st_insert( char * name, int lineno, int scope_level, char *scope_name, ExpT
       l->next = hashTable[h];
       hashTable[h] = l;
       break;
-    case ID_IN_A_LOWER_SCOPE:
+    case NEW_DECLARATION__ID_IN_A_LOWER_SCOPE:
       break;
-    case ID_IN_A_HIGHER_SCOPE:
-      break;
-    case ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL:
-      break;
-    case ID_IN_SAME_SCOPE:
-      ;LineList t = l->lines; // do not remove ";" from the start of this line! see https://stackoverflow.com/questions/18496282/why-do-i-get-a-label-can-only-be-part-of-a-statement-and-a-declaration-is-not-a
+    case NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME:
+    case IS_NOT_A_DECLARATION__NO_SCOPE_NAME:
       while (t->next != NULL) t = t->next;
       t->next = (LineList) malloc(sizeof(struct LineListRec));
       t->next->lineno = lineno;
@@ -125,27 +129,30 @@ int st_lookup ( char * name )
 int search_ID(char * name, char * scope_name, int scope_level) {
 
   int h = hash(name);
-  printf("##%s - hash:%d\n", name, h);
   BucketList l =  hashTable[h];
 
   while ((l != NULL) && (strcmp(name,l->name) != 0))
     l = l->next;
 
   if (l == NULL) { /* variable not yet in table */
-    return ID_NOT_FOUND;
+    return NEW_DECLARATION__ID_NOT_FOUND;
+  }
+  else if (scope_name == NULL) { /* gambiarra */
+    return IS_NOT_A_DECLARATION__NO_SCOPE_NAME; 
   }
   else { /* found in table, so just check more deeply */
+
     if (l->scope_level < scope_level) {
-      return ID_IN_A_LOWER_SCOPE;
+      return NEW_DECLARATION__ID_IN_A_LOWER_SCOPE;
     }
     else if (l->scope_level > scope_level) {
-      return ID_IN_A_HIGHER_SCOPE;
+      return NEW_DECLARATION__ID_IN_A_HIGHER_SCOPE;
     }
     else if (l->scope_level == scope_level && strcmp(scope_name, l->scope_name) != 0) {
-      return ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL;
+      return NEW_DECLARATION__ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL;
     }
     else if (l->scope_level == scope_level && strcmp(scope_name, l->scope_name) == 0) {
-      return ID_IN_SAME_SCOPE;
+      return NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME;
     }
   }
 }
@@ -157,20 +164,20 @@ int search_ID(char * name, char * scope_name, int scope_level) {
  */
 void printSymTab(FILE * listing)
 { int i;
-  fprintf(listing,"Variable Name  Scope Level   Scope Name    Type    Kind   Line Numbers\n");
-  fprintf(listing,"-------------  -----------   ----------    ----    ----   ------------\n");
+  fprintf(listing,"Variable Name  Scope Level   Scope Name   Type   Kind   Line Numbers\n");
+  fprintf(listing,"-------------  -----------   ----------   ----   ----   ------------\n");
   for (i=0;i<SIZE;++i)
   { if (hashTable[i] != NULL)
     { BucketList l = hashTable[i];
       while (l != NULL)
       { LineList t = l->lines;
-        fprintf(listing,"%-14s ",l->name);
-        fprintf(listing,"%-11d  ",l->scope_level);
-        fprintf(listing,"%5s",l->scope_name);
-        fprintf(listing,"%13d", l->type);
-        fprintf(listing,"%8d", l->kind);
+        fprintf(listing,"%-15s",l->name);
+        fprintf(listing,"%-14d",l->scope_level);
+        fprintf(listing,"%-13s",l->scope_name);
+        fprintf(listing,"%-7d", l->type);
+        fprintf(listing,"%-7d", l->kind);
         while (t != NULL)
-        { fprintf(listing,"%6d ",t->lineno);
+        { fprintf(listing,"%-4d ",t->lineno);
           t = t->next;
         }
         fprintf(listing,"\n");

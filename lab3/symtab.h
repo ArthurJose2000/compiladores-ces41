@@ -30,7 +30,13 @@ int st_lookup ( char * name );
  * return 1 if found same ID in higher or different scopes
  * return 2 if found same Id in the same scope
  */
-enum id_search_case {ID_NOT_FOUND, ID_IN_A_LOWER_SCOPE, ID_IN_A_HIGHER_SCOPE, ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL, ID_IN_SAME_SCOPE};
+enum id_search_case {
+    NEW_DECLARATION__ID_NOT_FOUND,
+    NEW_DECLARATION__ID_IN_A_LOWER_SCOPE,
+    NEW_DECLARATION__ID_IN_A_HIGHER_SCOPE, 
+    NEW_DECLARATION__ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL, 
+    NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME, 
+    IS_NOT_A_DECLARATION__NO_SCOPE_NAME};
 int search_ID(char * name, char * scope_name, int scope_level);
 
 /* Procedure printSymTab prints a formatted 

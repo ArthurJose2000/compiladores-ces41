@@ -332,6 +332,9 @@ void printTree(TreeNode *tree)
         fprintf(listing, "Op: ");
         scope_update(tree, tree->scope_name);
         printToken(tree->attr.op, "\0");
+        // if (tree->attr.op == ASSIGN) {
+        //   printf("assingnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn tree->scope_name: %s\n", tree->scope_name);
+        // }
         break;
       case ConstK:
         fprintf(listing, "Const: %d\n", tree->attr.val);
@@ -389,7 +392,7 @@ void printTree(TreeNode *tree)
     
     /*Adjust scope level*/
     if (tree->nodekind == StmtK){
-      if (tree->kind.stmt == IfK || tree->nodekind == RepeatK){
+      if (tree->kind.stmt == IfK || tree->kind.stmt == RepeatK){
           scope_lvl--;
         }
     }else if (tree->nodekind == DeclK){

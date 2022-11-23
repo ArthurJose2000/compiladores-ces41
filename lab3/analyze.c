@@ -64,6 +64,8 @@ static void insertNode( TreeNode * t){
       { 
         case IdK:
           st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
+          if (t->scope_name == NULL)
+            printf("IdK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
           break;
         default:
           break;
@@ -73,9 +75,13 @@ static void insertNode( TreeNode * t){
       switch (t->kind.decl)
         { 
           case VarK:
+            if (t->scope_name == NULL)
+              printf("VarK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
             st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
             break;
           case FunK:
+          if (t->scope_name == NULL)
+            printf("FunK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
             st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, FunK);
             break;
           default:
