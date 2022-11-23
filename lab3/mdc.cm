@@ -2,6 +2,7 @@
 int gdc (int u, int v)
 {
    int zz;
+   int ii;
    if (v == 0) {
       int i;
       int ii;
@@ -29,7 +30,15 @@ void main(void)
    int x;
    int y;
    int ii;
+   int ii;
    x = input();
    y = input();
    output(gdc(x,y));
 }
+
+/*
+Dois exemplos que ainda dão errado:
+   - declarar 'int zz;' na gdc e fazer 'zz = 2;' na main
+   - declarar 'int ii' duas vezes no mesmo escopo e declarar pelo 'int ii' em um escopo de nível maior
+
+*/
