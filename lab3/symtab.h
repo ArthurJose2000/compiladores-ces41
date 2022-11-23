@@ -15,10 +15,7 @@
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char * name, int lineno, int loc, char *scope_name, ExpType type, DeclKind kind );
-
-/* new insert demo*/
-void st_insertV2( char * name, int lineno, int loc, char *scope_name, ExpType type, DeclKind kind );
+void st_insert( char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind );
 
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
@@ -36,8 +33,13 @@ enum id_search_case {
     NEW_DECLARATION__ID_IN_A_HIGHER_SCOPE, 
     NEW_DECLARATION__ID_IN_ANOTHER_SCOPE_WITH_SAME_LEVEL, 
     NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME, 
-    IS_NOT_A_DECLARATION__NO_SCOPE_NAME};
-int search_ID(char * name, char * scope_name, int scope_level);
+    IS_NOT_A_DECLARATION__NO_SCOPE_NAME_EXP,
+    VARIABLE_IS_NOT_DECLARED,
+    IS_NOT_A_DECLARATION,
+    FUNCTION_IS_NOT_DECLARED,
+    VARIABLE_DECLARATION_WITH_SAME_NAME_OF_A_PREVIOUS_FUNCTION
+};
+int search_ID(char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind);
 
 /* Procedure printSymTab prints a formatted 
  * listing of the symbol table contents 

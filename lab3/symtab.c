@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "symtab.h"
 #include "globals.h"
 
@@ -64,7 +65,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char * name, int lineno, int scope_level, char *scope_name, ExpType type, DeclKind kind ) {
+void st_insert( char *name, int lineno, int scope_level, char *scope_name, ExpType type, NodeKind nodekind, DeclKind kind ) {
 
   int h = hash(name);
   BucketList l =  hashTable[h];
@@ -75,7 +76,7 @@ void st_insert( char * name, int lineno, int scope_level, char *scope_name, ExpT
   if (l != NULL)
     t = l->lines;
 
-  int id_search_case = search_ID(name, scope_name, scope_level);
+  int id_search_case = search_ID(name, scope_name, scope_level, nodekind, kind);
 
   switch (id_search_case) {
     case NEW_DECLARATION__ID_NOT_FOUND:
@@ -93,14 +94,30 @@ void st_insert( char * name, int lineno, int scope_level, char *scope_name, ExpT
       l->next = hashTable[h];
       hashTable[h] = l;
       break;
-    case NEW_DECLARATION__ID_IN_A_LOWER_SCOPE:
-      break;
-    case NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME:
-    case IS_NOT_A_DECLARATION__NO_SCOPE_NAME:
+    case IS_NOT_A_DECLARATION:
+    case IS_NOT_A_DECLARATION__NO_SCOPE_NAME_EXP:
       while (t->next != NULL) t = t->next;
       t->next = (LineList) malloc(sizeof(struct LineListRec));
       t->next->lineno = lineno;
       t->next->next = NULL;
+      break;
+    case NEW_DECLARATION__ID_IN_A_LOWER_SCOPE:
+      break;
+    case VARIABLE_IS_NOT_DECLARED:
+      printf("Error (CODE: 1) at line %d: variable '%s' is not declared\n", lineno, name);
+      exit(1);
+      break;
+    case FUNCTION_IS_NOT_DECLARED:
+      printf("Error (CODE: 5) at line %d: function '%s' is not declared\n", lineno, name);
+      exit(1);
+      break;
+    case NEW_DECLARATION__ID_IN_SAME_SCOPE_NAME: // ERROR
+      printf("Error (CODE: 4) at line %d: invalid declaration of '%s' (previously declared)\n", lineno, name);
+      exit(1);
+      break;
+    case VARIABLE_DECLARATION_WITH_SAME_NAME_OF_A_PREVIOUS_FUNCTION:
+      printf("Error (CODE: 7) at line %d: invalid declaration of '%s' (already exist a function with same name that was declared previously)\n", lineno, name);
+      exit(1);
       break;
     default:
       break;
@@ -119,14 +136,7 @@ int st_lookup ( char * name )
   else return l->scope_level;
 }
 
-/*Search the table for same IDs scope relations
- * return 0 if not found same ID
- * return 1 if found same ID in lower scope
- * return 2 if found same ID in higher scope
- * return 3 if found same ID in another scope of the same level
- * return 4 if found same ID in the same scope
-*/
-int search_ID(char * name, char * scope_name, int scope_level) {
+int search_ID(char * name, char * scope_name, int scope_level, NodeKind nodekind, DeclKind kind) {
 
   int h = hash(name);
   BucketList l =  hashTable[h];
@@ -134,18 +144,30 @@ int search_ID(char * name, char * scope_name, int scope_level) {
   while ((l != NULL) && (strcmp(name,l->name) != 0))
     l = l->next;
 
-  if (l == NULL) { /* variable not yet in table */
+  if (l == NULL && scope_name != NULL) { /* variable not yet in table */
     return NEW_DECLARATION__ID_NOT_FOUND;
   }
-  else if (scope_name == NULL) { /* gambiarra */
-    return IS_NOT_A_DECLARATION__NO_SCOPE_NAME; 
+  else if (l == NULL && scope_name == NULL && nodekind == AtvK) { /* gambiarra */
+      return FUNCTION_IS_NOT_DECLARED; 
+  }
+  else if (l == NULL && scope_name == NULL) { /* gambiarra */
+      return VARIABLE_IS_NOT_DECLARED; 
+  }
+  else if (scope_name == NULL || nodekind == ExpK) { /* gambiarra */
+    return IS_NOT_A_DECLARATION__NO_SCOPE_NAME_EXP; 
+  }
+  else if (nodekind == AtvK) {
+    return IS_NOT_A_DECLARATION;
   }
   else { /* found in table, so just check more deeply */
 
-    if (l->scope_level < scope_level) {
+    if (l->kind == FunK)
+      return VARIABLE_DECLARATION_WITH_SAME_NAME_OF_A_PREVIOUS_FUNCTION;
+
+    if (l->scope_level > scope_level) {
       return NEW_DECLARATION__ID_IN_A_LOWER_SCOPE;
     }
-    else if (l->scope_level > scope_level) {
+    else if (l->scope_level < scope_level) {
       return NEW_DECLARATION__ID_IN_A_HIGHER_SCOPE;
     }
     else if (l->scope_level == scope_level && strcmp(scope_name, l->scope_name) != 0) {
@@ -162,8 +184,9 @@ int search_ID(char * name, char * scope_name, int scope_level) {
  * listing of the symbol table contents 
  * to the listing file
  */
-void printSymTab(FILE * listing)
-{ int i;
+void printSymTab(FILE * listing) { 
+  bool isThereMainFunction = FALSE;
+  int i;
   fprintf(listing,"Variable Name  Scope Level   Scope Name   Type   Kind   Line Numbers\n");
   fprintf(listing,"-------------  -----------   ----------   ----   ----   ------------\n");
   for (i=0;i<SIZE;++i)
@@ -174,15 +197,35 @@ void printSymTab(FILE * listing)
         fprintf(listing,"%-15s",l->name);
         fprintf(listing,"%-14d",l->scope_level);
         fprintf(listing,"%-13s",l->scope_name);
-        fprintf(listing,"%-7d", l->type);
-        fprintf(listing,"%-7d", l->kind);
+
+        if (l->type == Integer)
+          fprintf(listing,"%-7s", "int");
+        else if (l->type == Void)
+          fprintf(listing,"%-7s", "void");
+        
+        if (l->kind == VarK)
+          fprintf(listing,"%-7s", "VarK");
+        else if (l->kind == FunK)
+          fprintf(listing,"%-7s", "Funk");
+        else
+          fprintf(listing,"%-7s", "Funk"); // to output() and input()
+
         while (t != NULL)
         { fprintf(listing,"%-4d ",t->lineno);
           t = t->next;
         }
         fprintf(listing,"\n");
+
+        if (strcmp(l->name, "main") == 0)
+          isThereMainFunction = TRUE;
+
         l = l->next;
       }
     }
+  }
+
+  if (!isThereMainFunction) {
+    printf("Error (CODE: 6): main function does not exist.\n");
+    exit(1);
   }
 } /* printSymTab */

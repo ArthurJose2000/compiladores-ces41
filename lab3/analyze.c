@@ -11,8 +11,10 @@
 #include "analyze.h"
 #include "scan.h"
 
-/* counter for variable memory scope_levels */
-//static int scope_level = 0;
+static void typeError(TreeNode * t, char * message, int code_error)
+{ fprintf(listing,"Error (CODE: %d) at line %d: %s\n", code_error, t->lineno, message);
+  Error = TRUE;
+}
 
 /* Procedure traverse is a generic recursive 
  * syntax tree traversal routine:
@@ -63,9 +65,9 @@ static void insertNode( TreeNode * t){
       switch (t->kind.exp)
       { 
         case IdK:
-          st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
+          st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, ExpK, -1);
           if (t->scope_name == NULL)
-            printf("IdK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
+            printf("IdK: algo errado com %s na linha %d - tipo %d\n", t->attr.name, t->lineno, t->type);
           break;
         default:
           break;
@@ -77,17 +79,35 @@ static void insertNode( TreeNode * t){
           case VarK:
             if (t->scope_name == NULL)
               printf("VarK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
-            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
+
+            if (t->type == Void && strcmp(t->attr.name, "void") != 0) {
+              typeError(t,"a variable cannot be declared as void", 3);
+              exit(1);
+            }
+            else if (strcmp(t->attr.name, "void") != 0)
+              st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, DeclK, VarK);
             break;
           case FunK:
-          if (t->scope_name == NULL)
-            printf("FunK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
-            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, FunK);
+            if (t->scope_name == NULL)
+              printf("FunK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
+            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, DeclK, FunK);
             break;
           default:
             break;
         }
+        break;
     case AtvK:
+      if (t->scope_name == NULL)
+        printf("AtvK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
+      if (strcmp(t->attr.name, "input") == 0) {
+        t->scope_name = "GLOBAL";
+        t->type = Integer;
+      } else if (strcmp(t->attr.name, "output") == 0) {
+        t->scope_name = "GLOBAL";
+        t->type = Void;
+      }
+      st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, AtvK, -1);
+      break;
     default:
       break;
   }
@@ -104,48 +124,33 @@ void buildSymtab(TreeNode * syntaxTree)
   }
 }
 
-static void typeError(TreeNode * t, char * message)
-{ fprintf(listing,"Type error at line %d: %s\n",t->lineno,message);
-  Error = TRUE;
-}
-
 /* Procedure checkNode performs
  * type checking at a single tree node
  */
-static void checkNode(TreeNode * t)
-{ switch (t->nodekind)
-  { case ExpK:
-      switch (t->kind.exp)
-      { case OpK:
-          if ((t->child[0]->type != Integer) ||
-              (t->child[1]->type != Integer))
-            typeError(t,"Op applied to non-integer");
-          // if ((t->attr.op == EQ) || (t->attr.op == LT))
-          //   t->type = Boolean;
-          // else
-          //   t->type = Integer;
+static void checkNode(TreeNode * t) {
+  switch (t->nodekind) {
+    case ExpK:
+      switch (t->kind.exp) {
+        case OpK:
+          // if ((t->child[0]->type == Integer) && (t->child[1]->type != Void)) {
+          //   printf("t->child[0]->type: %d, t->child[1]->type: %d\n", t->child[0]->type, t->child[1]->type);
+          //   typeError(t,"invalid assignment (int variable receiving void)", 2);
+          // }
           break;
         case ConstK:
         case IdK:
-          t->type = Integer;
           break;
         default:
           break;
       }
       break;
     case StmtK:
-      switch (t->kind.stmt)
-      { case IfK:
-          if (t->child[0]->type == Integer)
-            typeError(t->child[0],"if test is not Boolean");
+      switch (t->kind.stmt) {
+        case IfK:
           break;
         case AssignK:
-          if (t->child[0]->type != Integer)
-            typeError(t->child[0],"assignment of non-integer value");
           break;
         case RepeatK:
-          if (t->child[1]->type == Integer)
-            typeError(t->child[1],"repeat test is not Boolean");
           break;
         default:
           break;

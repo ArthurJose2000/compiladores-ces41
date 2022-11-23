@@ -284,7 +284,6 @@ static void printSpaces(void)
 void printTree(TreeNode *tree)
 {
   int i;
-  //char *current_scope_name = "if";
   char *current_if_count;
   char *current_while_count;
   INDENT;
@@ -355,6 +354,8 @@ void printTree(TreeNode *tree)
       {
       case VarK:
         tree->scope_lvl=scope_lvl;
+        if (scope_lvl == 0)
+          tree->scope_name = "GLOBAL";
         scope_update(tree, tree->scope_name);
         fprintf(listing, "Decl_Var: %s scope_lvl: %d\n", tree->attr.name, scope_lvl);
         break;
