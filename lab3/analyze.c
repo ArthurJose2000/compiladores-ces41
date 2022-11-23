@@ -63,13 +63,7 @@ static void insertNode( TreeNode * t){
       switch (t->kind.exp)
       { 
         case IdK:
-          if (st_lookup(t->attr.name) == -1)
-          /* not yet in table, so treat as new definition */
-            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
-          else
-          /* already in table, so ignore scope_level, 
-             add line number of use only */ 
-            st_insert(t->attr.name,t->lineno,0,t->scope_name, t->type, VarK);
+          st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
           break;
         default:
           break;
@@ -79,22 +73,10 @@ static void insertNode( TreeNode * t){
       switch (t->kind.decl)
         { 
           case VarK:
-            if (st_lookup(t->attr.name) == -1)
-            /* not yet in table, so treat as new definition */
-              st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
-            else
-            /* already in table, so ignore scope_level, 
-              add line number of use only */ 
-              st_insert(t->attr.name,t->lineno,0,t->scope_name, t->type, VarK);
+            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, VarK);
             break;
           case FunK:
-            if (st_lookup(t->attr.name) == -1)
-            /* not yet in table, so treat as new definition */
-              st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, FunK);
-            else
-            /* already in table, so ignore scope_level, 
-              add line number of use only */ 
-              st_insert(t->attr.name,t->lineno,0,t->scope_name, t->type, FunK);
+            st_insert(t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, FunK);
             break;
           default:
             break;
