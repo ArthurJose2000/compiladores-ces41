@@ -1,16 +1,13 @@
 /* Um programa para calcular mdc */
 
-int calc(int pp, int qq){
-   int r;
-   r = pp + qq;
-   return r;
+int ativa (int x, int y, int z){
+   return x + y + z;
 }
 
-int main(int pp, int qq)
+int main(int a, int b, int c, int d)
 {
    int x;
-   int a;
-   int b;
-
-   x = calc(a, b);
+   x = 10;
+   ativa(a, b, c);
+   return x + a + 9 - 10 + 7 - 100;
 }
