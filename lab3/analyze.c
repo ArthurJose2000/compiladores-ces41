@@ -66,8 +66,6 @@ static void insertNode( TreeNode * t){
       { 
         case IdK:
           st_insert(t, t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, ExpK, -1);
-          if (t->scope_name == NULL)
-            printf("IdK: algo errado com %s na linha %d - tipo %d\n", t->attr.name, t->lineno, t->type);
           break;
         default:
           break;
@@ -77,8 +75,6 @@ static void insertNode( TreeNode * t){
       switch (t->kind.decl)
         { 
           case VarK:
-            if (t->scope_name == NULL)
-              printf("VarK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
 
             if (t->type == Void && strcmp(t->attr.name, "void") != 0) {
               typeError(t,"a variable cannot be declared as void", 3);
@@ -88,8 +84,6 @@ static void insertNode( TreeNode * t){
               st_insert(t, t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, DeclK, VarK);
             break;
           case FunK:
-            if (t->scope_name == NULL)
-              printf("FunK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
             st_insert(t, t->attr.name,t->lineno,t->scope_lvl,t->scope_name, t->type, DeclK, FunK);
             break;
           default:
@@ -97,8 +91,6 @@ static void insertNode( TreeNode * t){
         }
         break;
     case AtvK:
-      if (t->scope_name == NULL)
-        printf("AtvK: algo errado com %s na linha %d\n", t->attr.name, t->lineno);
       if (strcmp(t->attr.name, "input") == 0) {
         t->scope_name = "GLOBAL";
         t->type = Integer;
@@ -133,7 +125,6 @@ static void checkNode(TreeNode * t) {
       switch (t->kind.exp) {
         case OpK:
           if ((t->child[0]->type == Integer) && (t->child[1]->type == Void && t->child[1]->nodekind == AtvK)) {
-            printf("t->child[0]->type: %d, t->child[1]->type: %d\n", t->child[0]->type, t->child[1]->type);
             typeError(t,"invalid assignment (int variable receiving void)", 2);
             exit(1);
           }

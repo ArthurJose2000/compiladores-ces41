@@ -1,11 +1,11 @@
 /* Um programa para calcular mdc */
-
-
-
-int main(int a, int b, int c, int d)
-{
-   int x[10];
-   x = b;
-   x = a + b - d ;
+int aux(int param) {
+   return 100 + param;
+}
+int main(void) {
+   int x;
+   int a;
+   a = 5;
+   x = aux(a);
    return x;
 }
