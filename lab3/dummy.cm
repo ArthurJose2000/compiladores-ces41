@@ -7,7 +7,4 @@ int teste(int x, int y, int z){
 int main(int xx)
 {
    int x;
-   int y;
-   int z;
-   return teste(x, y, z);
 }
