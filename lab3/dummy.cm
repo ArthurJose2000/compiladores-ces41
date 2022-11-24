@@ -1,5 +1,13 @@
 /* Um programa para calcular mdc */
-void main(void)
+
+int teste(int x, int y, int z){
+   return x + y + z;
+}
+
+int main(int xx)
 {
-   return 3 + 4;
+   int x;
+   int y;
+   int z;
+   return teste(x, y, z);
 }

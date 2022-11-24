@@ -86,13 +86,13 @@ static char* genStmt( TreeNode * tree)
 
 /* Procedure genExp generates code at an expression node */
 static char * genExp( TreeNode * tree)
-{  printf("chegou em genEXP\n");
+{ 
   TreeNode * p1, * p2;
   switch (tree->kind.exp) {
 
     case ConstK :
-      //sprintf(intstr, "%d", tree->attr.val);
-      //return intstr;
+      sprintf(intstr, "%d", tree->attr.val);
+      return intstr;
       break; /* ConstK */
     
     case IdK :
@@ -100,17 +100,16 @@ static char * genExp( TreeNode * tree)
       break; /* IdK */
 
     case OpK :
-         printf("chegou em OpK\n");
-         //p1 = tree->child[0];
-         //p2 = tree->child[1];
+         p1 = tree->child[0];
+         p2 = tree->child[1];
          
          char* tmp_name = "temp_name";
          tmp_name = gen_temp_var_name("t", tmp_counter++);
          
-         char * first_var = "first_var";
-         //first_var = cGen(p1);
-         char* second_var = "second_var";
-         //second_var = cGen(p2);
+         char first_var[10] = "first_var";
+         strcpy(first_var, cGen(p1)); 
+         char second_var[10] = "second_var";
+         strcpy(second_var ,cGen(p2));
          
          switch (tree->attr.op) {
             case PLUS :
@@ -137,17 +136,17 @@ static char * genExp( TreeNode * tree)
          } /* case op */
          return tmp_name;
          break; /* OpK */
-
     default:
       break;
   }
 } /* genExp */
 
-
+/*Definicao de sub-rotinas*/
 static char * genDefDecl(TreeNode * tree){
    TreeNode * p1, * p2;
    switch (tree->kind.decl) {
     case VarK :
+      printf("entrou em Vark %s", tree->attr.name);
       break; /* VarK */
     
     case FunK :
@@ -159,12 +158,26 @@ static char * genDefDecl(TreeNode * tree){
       }
       
       break; /* FunK */
-   
     default:
       break;
   }
 }
 
+/*Invocacao de sub-rotinas*/
+static char * genAtivDecl(TreeNode * tree){
+   TreeNode * p1;
+   int count = 0;
+   p1 = tree->child[0];
+
+   while(p1 != NULL){
+      char param_name[10];
+      strcpy(param_name, cGen(p1));
+      printf("param %s\n", param_name);
+      count++;
+      p1 = p1->sibling;
+   }
+   printf("call %s %d", tree->attr.name, count);
+}
 
 
 /*Acesso indexado*/
@@ -177,8 +190,8 @@ static void idx_access(TreeNode * tree){
  */
 static char * cGen( TreeNode * tree)
 {  //printf("entrou em cGen\n");
-   if (tree != NULL) {
-   switch (tree->nodekind) {
+   if (tree != NULL) 
+   { switch (tree->nodekind) {
       case StmtK:
          return genStmt(tree);
          break;
@@ -189,14 +202,15 @@ static char * cGen( TreeNode * tree)
          return genDefDecl(tree);
          break;
       case AtvK:
+         return genAtivDecl(tree);
          break;
       case TypeK:
          return cGen(tree->child[0]);
          break;
       default:
         break;
-    }
-    cGen(tree->sibling);
+   }
+   cGen(tree->sibling);
   }
 }
 
