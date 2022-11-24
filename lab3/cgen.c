@@ -82,7 +82,9 @@ static void genStmt( TreeNode * tree)
 
       case AssignK:
          if (tree->child[0]->child[0] == NULL && tree->child[1]->child[0] == NULL) {
-            printf("%s = %d\n", tree->child[0]->attr.name, tree->child[1]->attr.val);
+            printf("%s = ", tree->child[0]->attr.name);
+            genExp(tree->child[1]);
+            printf("\n");
          }
          else if( (tree->child[0]->child[0] != NULL && tree->child[0]->child[1] == NULL) ){
             tmp_counter++;
@@ -113,6 +115,7 @@ static void genStmt( TreeNode * tree)
       case ReturnK:
          cGen(tree->child[0]);
          tmp_name = gen_temp_var_name("t", tmp_counter);
+         printf(" = %s\n", tmp_name);
          printf("return %s", tmp_name);
          break; /* return_k */
       default:
@@ -170,7 +173,6 @@ static void genExp( TreeNode * tree)
          }
          genExp(p2);
       
-         
          switch (tree->attr.op) {
          case PLUS :
             printf(" + ");
