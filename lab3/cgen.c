@@ -21,6 +21,9 @@ static int tmpOffset = 0;
 /*Global counter for tmp_variables */
 static int tmp_counter = 0;
 
+/*Global counter for index variables counting*/
+static int tmp_idx_counter = 0;
+
 static char intstr[30];
 /* prototype for internal recursive code generator */
 static void cGen (TreeNode * tree);
@@ -43,6 +46,7 @@ char * gen_temp_var_name(char* name, int x){
 static void genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;
   char* tmp_name = "temp_name";
+  char* tmp_idx = "temp_idx";
   switch (tree->kind.stmt) {
 
       case IfK :
@@ -80,8 +84,27 @@ static void genStmt( TreeNode * tree)
          if (tree->child[0]->child[0] == NULL && tree->child[1]->child[0] == NULL) {
             printf("%s = %d\n", tree->child[0]->attr.name, tree->child[1]->attr.val);
          }
+         else if( (tree->child[0]->child[0] != NULL && tree->child[0]->child[1] == NULL) ){
+            tmp_counter++;
+            tmp_name = gen_temp_var_name("t", tmp_counter);
+            tmp_idx_counter++;
+            tmp_idx = gen_temp_var_name("g", tmp_idx_counter);
+            printf("%s[%s] = ", tree->child[0]->attr.name, tmp_idx);
+            tmp_counter++;
+            tmp_name = gen_temp_var_name("t", tmp_counter);
+            printf("%s\n", tmp_name);
+
+            tmp_counter--;
+            tmp_name = gen_temp_var_name("t", tmp_counter++);
+            printf("%s = ",tmp_idx);
+            genExp(tree->child[0]->child[0]);
+            printf(" * 4\n");
+
+            cGen(tree->child[1]);
+         }
          else {
-            char* tmp_name = gen_temp_var_name("t", tmp_counter);
+            tmp_counter++;
+            tmp_name = gen_temp_var_name("t", tmp_counter);
             printf("%s = %s\n", tree->child[0]->attr.name, tmp_name);
             cGen(tree->child[1]);
          }
@@ -101,17 +124,26 @@ static void genStmt( TreeNode * tree)
 static void genExp( TreeNode * tree)
 { 
   TreeNode * p1, * p2;
+  char* tmp_name = "temp_name";
+  char* tmp_idx = "temp_idx";
   switch (tree->kind.exp) {
     case ConstK :
       printf("%d", tree->attr.val);
       break; /* ConstK */
     
     case IdK :
-      printf("%s", tree->attr.name);
+      if(tree->child[0] == NULL){
+         printf("%s", tree->attr.name);
+      }
+      else{
+         printf("%s[",tree->attr.name);
+         tmp_idx = gen_temp_var_name("g", tmp_idx_counter);
+         printf("%s", tmp_idx);
+         printf("]");
+      }
+
       break; /* IdK */
-
     case OpK :
-
       // preparando ASSIGNK
       if (tree->nodekind == ExpK && tree->kind.exp == OpK && tree->attr.op && tree->attr.op == ASSIGN) {
          tree->nodekind = StmtK;
@@ -119,18 +151,26 @@ static void genExp( TreeNode * tree)
          genStmt(tree);
          break;
       }
-      char* tmp_name = "temp_name";
       p1 = tree->child[1];
       p2 = tree->child[0];
 
       if (tree->attr.op == ASSIGN) break;
 
       if(p2->kind.exp != OpK){
+         if((p2->child[0] != NULL && p2->child[1] == NULL)){
+            tmp_idx_counter++;
+            tmp_idx = gen_temp_var_name("g", tmp_idx_counter);
+            printf("%s = ",tmp_idx);
+            genExp(p2->child[0]);
+            printf(" * 4\n");
+         }
          if(tmp_counter != 0){
             tmp_name = gen_temp_var_name("t", tmp_counter);
             printf("%s = ", tmp_name);
          }
          genExp(p2);
+      
+         
          switch (tree->attr.op) {
          case PLUS :
             printf(" + ");
@@ -166,11 +206,19 @@ static void genExp( TreeNode * tree)
             emitComment("BUG: Unknown operator");
             break;
          } /* case op */
+         
          genExp(p1);
          printf("\n");
       }else{
          tmp_counter++;
          genExp(p2);
+         if((p1->child[0] != NULL && p1->child[1] == NULL)){
+            tmp_idx_counter++;
+            tmp_idx = gen_temp_var_name("g", tmp_idx_counter);
+            printf("%s = ",tmp_idx);
+            genExp(p1->child[0]);
+            printf(" * 4\n");
+         }
          tmp_counter--;
          tmp_name = gen_temp_var_name("t", tmp_counter);
          printf("%s = ", tmp_name);
