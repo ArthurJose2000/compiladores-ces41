@@ -83,7 +83,7 @@ static void genStmt( TreeNode * tree)
       case AssignK:
          if (tree->child[0]->child[0] == NULL && tree->child[1]->child[0] == NULL) {
             printf("%s = ", tree->child[0]->attr.name);
-            genExp(tree->child[1]);
+            cGen(tree->child[1]);
             printf("\n");
          }
          else if( (tree->child[0]->child[0] != NULL && tree->child[0]->child[1] == NULL) ){
@@ -286,7 +286,9 @@ static void genAtivDecl(TreeNode * tree){
    p1 = tree->child[0];
 
    while(p1 != NULL){
-      printf("param %s\n", p1->attr.name);
+      printf("param ");
+      cGen(p1);
+      printf("\n");
       count++;
       p1 = p1->sibling;
    }

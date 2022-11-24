@@ -8,6 +8,7 @@ int gdc (int u, int v)
 void main(void)
 {
    int x;
+   int gdc;
    int y;
    x = input();
    y = input();

@@ -1,11 +1,43 @@
 /* Um programa para calcular mdc */
-int aux(int param) {
-   return 100 + param;
-}
-int main(void) {
+int func(void) {
    int x;
-   int a;
-   a = 5;
-   x = aux(a);
+   x = 7;
    return x;
+}
+
+int functwo(int x, int y, int z) {
+   int a[10];
+   a[2] = x + a[3] + y + 6;
+   return a;
+}
+
+int main(int a, int b, int c, int d) {
+
+   /* Expressão com atribuição */
+   int x;
+   x = a + 2 + 3 + 5 - 9;
+
+   /* Desvio - if-else */
+   if (a == 2) {
+      int k;
+      b = 3;
+   }
+   else {
+      b = 4;
+   }
+   x = 2;
+
+   /* Desvio - while */
+   while (a == b) {
+      int x;
+      x = 6;
+      c = 6 + 2;
+   }
+   b = 2;
+
+   /* Invocação (e definição) de subrotinas */
+   b = func();
+   b = functwo();
+
+
 }
