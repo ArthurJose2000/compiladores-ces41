@@ -21,6 +21,7 @@ static int tmpOffset = 0;
 /*Global counter for tmp_variables */
 static int tmp_counter = 0;
 
+static char intstr[10];
 /* prototype for internal recursive code generator */
 static char * cGen (TreeNode * tree);
 
@@ -73,7 +74,12 @@ static char* genStmt( TreeNode * tree)
          break; /* assign_k */
 
       case ReturnK:
-
+         char * valor = "return valor";
+         printf("nodekind %d\n", tree->child[0]->nodekind);
+         printf("kind exp %d\n", tree->child[0]->kind.exp);
+         valor = cGen(tree->child[0]);
+         printf("return %s", valor);
+         return valor;
          break; /* return_k */
       default:
          break;
@@ -83,27 +89,34 @@ static char* genStmt( TreeNode * tree)
 /* Procedure genExp generates code at an expression node */
 static char * genExp( TreeNode * tree)
 {  printf("chegou em genEXP\n");
-   int loc;
   TreeNode * p1, * p2;
   switch (tree->kind.exp) {
 
     case ConstK :
+      //sprintf(intstr, "%d", tree->attr.val);
+      //return intstr;
       break; /* ConstK */
     
     case IdK :
+      return tree->attr.name;
       break; /* IdK */
 
     case OpK :
          printf("chegou em OpK\n");
-         p1 = tree->child[0];
-         p2 = tree->child[1];
-         char* tmp_name = gen_temp_var_name("t", tmp_counter++);
+         //p1 = tree->child[0];
+         //p2 = tree->child[1];
+         
+         //char* tmp_name = "temp_name";
+         //tmp_name = gen_temp_var_name("t", tmp_counter++);
          
          /* gen code for ac = left arg */
-         char * first_var = cGen(p1);
+         //char * first_var = "first_var";
+         //first_var = cGen(p1);
          /* gen code for ac = right operand */
-         char* second_var = cGen(p2);
+         //char* second_var = "second_var";
+         //second_var = cGen(p2);
          /* now load left operand */
+         /*
          switch (tree->attr.op) {
             case PLUS :
                printf("%s = %s + %s", tmp_name, first_var, second_var);
@@ -126,8 +139,8 @@ static char * genExp( TreeNode * tree)
             default:
                emitComment("BUG: Unknown operator");
                break;
-         } /* case op */
-         return tmp_name;
+         }*/ /* case op */
+         //return tmp_name;
          break; /* OpK */
 
     default:
@@ -143,15 +156,16 @@ static char * genDefDecl(TreeNode * tree){
       break; /* VarK */
     
     case FunK :
-      
+      printf("%s:", tree->attr.name);
       p1 = tree->child[1];
       while(p1 != NULL){
-         
+         cGen(p1);
+         exit(1);
+         p1 = p1->sibling;
       }
-      printf("%s: %s", tree->attr.name, )
-
+      
       break; /* FunK */
-
+   
     default:
       break;
   }
@@ -173,12 +187,13 @@ static char * cGen( TreeNode * tree)
       if(tree->attr.name != NULL){printf("%s\n", tree->attr.name);}
    switch (tree->nodekind) {
       case StmtK:
-        return genStmt(tree);
-        break;
+         return genStmt(tree);
+         break;
       case ExpK:
-        return genExp(tree);
-        break;
+         return genExp(tree);
+         break;
       case DeclK:
+         return genDefDecl(tree);
          break;
       case AtvK:
          break;

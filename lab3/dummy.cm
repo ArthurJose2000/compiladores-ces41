@@ -1,7 +1,5 @@
 /* Um programa para calcular mdc */
-int x;
 void main(void)
 {
-   int x;
-   x = 2 + 3;
+   return 3 + 4;
 }
