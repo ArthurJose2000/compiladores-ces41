@@ -25,6 +25,8 @@ static char intstr[30];
 /* prototype for internal recursive code generator */
 static void cGen (TreeNode * tree);
 
+static void genExp( TreeNode * tree);
+
 /*Generate labels for temporary variables*/
 char * gen_temp_var_name(char* name, int x){
   char* tmp_name;
@@ -40,17 +42,38 @@ char * gen_temp_var_name(char* name, int x){
 /* Procedure genStmt generates code at a statement node */
 static void genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;
+  char* tmp_name = "temp_name";
   switch (tree->kind.stmt) {
 
       case IfK :
+         tmp_name = gen_temp_var_name("t", tmp_counter);
+         printf("%s = ", tmp_name);
          p1 = tree->child[0] ;
-         p2 = tree->child[1] ;
+         genExp(p1);
+         printf("if_true %s goto L1\n", tmp_name);
+         
          p3 = tree->child[2] ;
+         cGen(p3);
+
+         printf("goto L2\n");
+         printf("L1:");
+         p2 = tree->child[1] ;
+         cGen(p2);
+
+         printf("L2:");
          break; /* if_k */
 
       case RepeatK:
+         printf("L1: ");
+         tmp_name = gen_temp_var_name("t", tmp_counter);
+         printf("%s = ", tmp_name);
          p1 = tree->child[0] ;
+         genExp(p1);
+         printf("if_false %s goto L2\n", tmp_name);
          p2 = tree->child[1] ;
+         cGen(p2);
+         printf("goto L1\n");
+         printf("L2:");
          break; /* repeat */
 
       case AssignK:
@@ -65,7 +88,6 @@ static void genStmt( TreeNode * tree)
          break; /* assign_k */
 
       case ReturnK:
-         char* tmp_name = "temp_name";
          cGen(tree->child[0]);
          tmp_name = gen_temp_var_name("t", tmp_counter);
          printf("return %s", tmp_name);
@@ -103,14 +125,12 @@ static void genExp( TreeNode * tree)
 
       if (tree->attr.op == ASSIGN) break;
 
-      
-
       if(p2->kind.exp != OpK){
          if(tmp_counter != 0){
             tmp_name = gen_temp_var_name("t", tmp_counter);
             printf("%s = ", tmp_name);
          }
-         genExp(p1);
+         genExp(p2);
          switch (tree->attr.op) {
          case PLUS :
             printf(" + ");
@@ -130,11 +150,23 @@ static void genExp( TreeNode * tree)
          case EQ :
             printf(" == ");
             break;
+         case LEQT:
+            printf(" <= ");
+            break;
+         case GT:
+            printf(" > ");
+            break;
+         case GEQT:
+            printf(" >= ");
+            break;
+         case NEQ:
+            printf(" != ");
+            break;
          default:
             emitComment("BUG: Unknown operator");
             break;
          } /* case op */
-         genExp(p2);
+         genExp(p1);
          printf("\n");
       }else{
          tmp_counter++;
