@@ -21,15 +21,15 @@ static int tmpOffset = 0;
 /*Global counter for tmp_variables */
 static int tmp_counter = 0;
 
-static char intstr[10];
+static char intstr[30];
 /* prototype for internal recursive code generator */
 static char * cGen (TreeNode * tree);
 
 /*Generate labels for temporary variables*/
 char * gen_temp_var_name(char* name, int x){
   char* tmp_name;
-  char intstr[10];
-  int len = strlen(name)+10;
+  char intstr[30];
+  int len = strlen(name)+30;
   tmp_name = malloc(len);
   strcpy(tmp_name, name);
   sprintf(intstr, "%d", x); 
@@ -40,8 +40,6 @@ char * gen_temp_var_name(char* name, int x){
 /* Procedure genStmt generates code at a statement node */
 static char* genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;
-  int savedLoc1,savedLoc2,currentLoc;
-  int loc;
   switch (tree->kind.stmt) {
 
       case IfK :
@@ -49,20 +47,20 @@ static char* genStmt( TreeNode * tree)
          p2 = tree->child[1] ;
          p3 = tree->child[2] ;
          /* generate code for test expression */
-         cGen(p1);
+         //cGen(p1);
          /* recurse on then part */
-         cGen(p2);
+         //cGen(p2);
          /* recurse on else part */
-         cGen(p3);
+         //cGen(p3);
          break; /* if_k */
 
       case RepeatK:
          p1 = tree->child[0] ;
          p2 = tree->child[1] ;
          /* generate code for body */
-         cGen(p1);
+         //cGen(p1);
          /* generate code for test */
-         cGen(p2);
+         //cGen(p2);
          break; /* repeat */
 
       case AssignK:
@@ -106,9 +104,9 @@ static char * genExp( TreeNode * tree)
          char* tmp_name = "temp_name";
          tmp_name = gen_temp_var_name("t", tmp_counter++);
          
-         char first_var[10] = "first_var";
+         char first_var[30] = "first_var";
          strcpy(first_var, cGen(p1)); 
-         char second_var[10] = "second_var";
+         char second_var[30] = "second_var";
          strcpy(second_var ,cGen(p2));
          
          switch (tree->attr.op) {
@@ -146,7 +144,7 @@ static char * genDefDecl(TreeNode * tree){
    TreeNode * p1, * p2;
    switch (tree->kind.decl) {
     case VarK :
-      printf("entrou em Vark %s", tree->attr.name);
+      //printf("entrou em Vark %s\n", tree->attr.name);
       break; /* VarK */
     
     case FunK :
@@ -156,7 +154,6 @@ static char * genDefDecl(TreeNode * tree){
          cGen(p1);
          p1 = p1->sibling;
       }
-      
       break; /* FunK */
     default:
       break;
@@ -170,13 +167,14 @@ static char * genAtivDecl(TreeNode * tree){
    p1 = tree->child[0];
 
    while(p1 != NULL){
-      char param_name[10];
+      char param_name[30];
       strcpy(param_name, cGen(p1));
       printf("param %s\n", param_name);
       count++;
       p1 = p1->sibling;
    }
-   printf("call %s %d", tree->attr.name, count);
+   printf("call %s, %d\n", tree->attr.name, count);
+   return "genAtiv falso\n";
 }
 
 
@@ -199,18 +197,19 @@ static char * cGen( TreeNode * tree)
          return genExp(tree);
          break;
       case DeclK:
-         return genDefDecl(tree);
+         genDefDecl(tree);
          break;
       case AtvK:
          return genAtivDecl(tree);
          break;
       case TypeK:
-         return cGen(tree->child[0]);
+         cGen(tree->child[0]);
+         cGen(tree->sibling);
          break;
       default:
         break;
    }
-   cGen(tree->sibling);
+   //cGen(tree->sibling);
   }
 }
 

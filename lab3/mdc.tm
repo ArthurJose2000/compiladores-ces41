@@ -1,5 +1,5 @@
 * TINY Compilation to TM Code
-* File: dummy.tm
+* File: mdc.tm
 * BUG: Unknown operator
 * BUG: Unknown operator
 * BUG: Unknown operator
