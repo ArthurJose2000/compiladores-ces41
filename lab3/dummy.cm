@@ -1,34 +1,7 @@
 /* Um programa para calcular mdc */
-int gdc (int u, int v)
-{
-   int z;
-   if (v == 0) {
-      int i;
-      int ii;
-      v = 2;
-      return 0;
-   }
-   else{
-      int j;
-      return 2;
-   } 
-   if (u == 0){
-      int ifdois;
-      ifdois = 2; 
-   }
-   while(u!=10){
-      int k;
-      u = u+1;
-   }
-   /* u-u / v*v == u mod v */
-}
-
+int x;
 void main(void)
 {
    int x;
-   int y;
-   int z;
-   int ii;
-   x = 2;
-   y = 2;
+   x = 2 + 3;
 }
