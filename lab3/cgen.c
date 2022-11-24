@@ -74,11 +74,9 @@ static char* genStmt( TreeNode * tree)
          break; /* assign_k */
 
       case ReturnK:
-         char * valor = "return valor";
-         printf("nodekind %d\n", tree->child[0]->nodekind);
-         printf("kind exp %d\n", tree->child[0]->kind.exp);
+         char * valor = "return default";
          valor = cGen(tree->child[0]);
-         printf("return %s", valor);
+         printf("return %s\n", valor);
          return valor;
          break; /* return_k */
       default:
@@ -106,41 +104,38 @@ static char * genExp( TreeNode * tree)
          //p1 = tree->child[0];
          //p2 = tree->child[1];
          
-         //char* tmp_name = "temp_name";
-         //tmp_name = gen_temp_var_name("t", tmp_counter++);
+         char* tmp_name = "temp_name";
+         tmp_name = gen_temp_var_name("t", tmp_counter++);
          
-         /* gen code for ac = left arg */
-         //char * first_var = "first_var";
+         char * first_var = "first_var";
          //first_var = cGen(p1);
-         /* gen code for ac = right operand */
-         //char* second_var = "second_var";
+         char* second_var = "second_var";
          //second_var = cGen(p2);
-         /* now load left operand */
-         /*
+         
          switch (tree->attr.op) {
             case PLUS :
-               printf("%s = %s + %s", tmp_name, first_var, second_var);
+               printf("%s = %s + %s\n", tmp_name, first_var, second_var);
                break;
             case MINUS :
-               printf("%s = %s - %s", tmp_name, first_var, second_var);
+               printf("%s = %s - %s\n", tmp_name, first_var, second_var);
                break;
             case TIMES :
-               printf("%s = %s * %s", tmp_name, first_var, second_var);
+               printf("%s = %s * %s\n", tmp_name, first_var, second_var);
                break;
             case OVER :
-               printf("%s = %s / %s", tmp_name, first_var, second_var);
+               printf("%s = %s / %s\n", tmp_name, first_var, second_var);
                break;
             case LT :
-               printf("%s = %s < %s", tmp_name, first_var, second_var);
+               printf("%s = %s < %s\n", tmp_name, first_var, second_var);
                break;
             case EQ :
-               printf("%s = %s == %s", tmp_name, first_var, second_var);
+               printf("%s = %s == %s\n", tmp_name, first_var, second_var);
                break;
             default:
                emitComment("BUG: Unknown operator");
                break;
-         }*/ /* case op */
-         //return tmp_name;
+         } /* case op */
+         return tmp_name;
          break; /* OpK */
 
     default:
@@ -160,7 +155,6 @@ static char * genDefDecl(TreeNode * tree){
       p1 = tree->child[1];
       while(p1 != NULL){
          cGen(p1);
-         exit(1);
          p1 = p1->sibling;
       }
       
@@ -184,7 +178,6 @@ static void idx_access(TreeNode * tree){
 static char * cGen( TreeNode * tree)
 {  //printf("entrou em cGen\n");
    if (tree != NULL) {
-      if(tree->attr.name != NULL){printf("%s\n", tree->attr.name);}
    switch (tree->nodekind) {
       case StmtK:
          return genStmt(tree);
